@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResVaneHotCityMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResVaneHotCity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="rank" property="rank" jdbcType="INTEGER" />
+    <result column="total_count" property="totalCount" jdbcType="INTEGER" />
+    <result column="statistics_time" property="statisticsTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, city_name, rank, total_count, statistics_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_vane_hot_city
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update res_vane_hot_city set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  keyProperty="id" useGeneratedKeys="true"  parameterType="cn.com.ubing.res.model.ResVaneHotCity" >
+    insert into res_vane_hot_city (id, create_time, update_time, 
+      delete_flag, city_name, rank, 
+      total_count, statistics_time)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, #{rank,jdbcType=INTEGER}, 
+      #{totalCount,jdbcType=INTEGER}, #{statisticsTime,jdbcType=TIMESTAMP})
+  </insert>
+   <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResVaneHotCity" >
+    update res_vane_hot_city
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      rank = #{rank,jdbcType=INTEGER},
+      total_count = #{totalCount,jdbcType=INTEGER},
+      statistics_time = #{statisticsTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

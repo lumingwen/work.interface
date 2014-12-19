@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.rms.dao.RmsUserMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.rms.model.RmsUser" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_type" property="userType" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="password_key" property="passwordKey" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="real_name_check_status" property="realNameCheckStatus" jdbcType="INTEGER" />
+    <result column="company_check_status" property="companyCheckStatus" jdbcType="INTEGER" />
+    <result column="image__attahcment_id" property="imageAttahcmentId" jdbcType="BIGINT" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="weixin_open_id" property="weixinOpenId" jdbcType="VARCHAR" />
+    <result column="weixin_bound_flag" property="weixinBoundFlag" jdbcType="INTEGER" />
+    <result column="signature" property="signature" jdbcType="VARCHAR" />
+    <result column="xinge_token" jdbcType="VARCHAR" property="xingeToken" />
+    <result column="app_type" jdbcType="VARCHAR" property="appType" />
+    <result column="xinge_token" property="xingeToken" jdbcType="VARCHAR" />
+    <result column="app_type" property="appType" jdbcType="VARCHAR" />
+  </resultMap>
+   <resultMap type="cn.com.ubing.rms.dto.BusinessUserInfoResponseDto" id="BusinessUserInfo">
+  	<result column="real_name_check_status" property="realNameCheckStatus" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="rank_percentage" property="rankPercentage" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="end_score" property="endScore" jdbcType="VARCHAR" />
+    <result column="score_level" property="scoreLevel" jdbcType="VARCHAR" />
+    <result column="preset_time" property="presetTime" jdbcType="VARCHAR" />
+    <result column="company_check_status" property="companyCheckStatus" jdbcType="VARCHAR" />
+    <result column="business_type_status" property="businessTypeStatus" jdbcType="VARCHAR" />
+    <result column="photo_url" property="photoUrl" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="business_types" property="businessTypes" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap type="cn.com.ubing.rms.dto.MainViewResponseDto" id="MainInfo">
+	<result column="plan" property="plan" jdbcType="VARCHAR" />
+	<result column="appraisal" property="appraisal" jdbcType="VARCHAR" />
+	<result column="requirement" property="requirement" jdbcType="VARCHAR" />
+	<result column="message" property="message" jdbcType="VARCHAR" />
+	<result column="broadcast" property="broadcast" jdbcType="VARCHAR" />
+	<result column="pho_url" property="phoUrl" jdbcType="VARCHAR" />
+	<result column="level" property="level" jdbcType="VARCHAR" />
+	<result column="name" property="name" jdbcType="VARCHAR" />
+	<result column="ticket_value" property="ticketValue" jdbcType="VARCHAR" />
+	<result column="hotel_value" property="hotelValue" jdbcType="VARCHAR" />
+	<result column="personal_value" property="personalValue" jdbcType="VARCHAR" />
+	<result column="group_value" property="groupValue" jdbcType="VARCHAR" />
+	<result column="ticket_status" property="ticketStatus" jdbcType="VARCHAR" />
+	<result column="hotel_status" property="hotelStatus" jdbcType="VARCHAR" />
+	<result column="personal_status" property="personalStatus" jdbcType="VARCHAR" />
+	<result column="group_status" property="groupStatus" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="userInfo" type="cn.com.ubing.rms.dto.UserCenterInfoResponseDto">
+  	<result column="pho_url" property="photoUrl" jdbcType="VARCHAR" />
+  	<result column="id" property="id" jdbcType="VARCHAR" />
+  	<result column="email" property="email" jdbcType="VARCHAR" />
+  	<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, user_type, username, password, password_key, 
+    nickname, tel, email, number, score, status, real_name_check_status, company_check_status, 
+    image__attahcment_id, role_id, weixin_open_id, weixin_bound_flag, signature, xinge_token, app_type
+  </sql>
+  
+    <sql id="Base_Column_List1" >
+     t1.id, t1.create_time, t1.update_time, t1.delete_flag, t1.user_type, t1.username, t1.password, t1.password_key, 
+    t1.nickname, t1.tel, t1.email, t1.number, t1.score, t1.status, t1.real_name_check_status, t1.company_check_status, 
+    t1.image__attahcment_id, t1.role_id, t1.weixin_open_id, t1.weixin_bound_flag, t1.signature, t1.xinge_token, t1.app_type
+  </sql>
+  
+  <select id="getUserImageAndNickNameInfo" resultMap="userInfo" parameterType="cn.com.ubing.common.dto.RequestDto" >
+  	SELECT    
+    t1.id,t1.`email`,t1.`nickname`,
+    t2.save_path AS pho_url
+    FROM rms_user t1
+    LEFT JOIN res_attachment t2 ON t2.`id`=t1.`image__attahcment_id`
+    WHERE t1.id=#{uid}
+  </select>
+  <select id="getBusinessUserInfo" resultMap="BusinessUserInfo" parameterType="cn.com.ubing.common.dto.RequestDto" >
+  	SELECT 
+	res.*,
+	le.`end_score`,
+	le.`name` AS score_level,
+	le.`preset_time`
+	FROM
+	(SELECT
+	u.`score`,
+	u.`nickname`,
+	(SELECT att.save_path FROM res_attachment att WHERE att.`id`= u.`image__attahcment_id`) AS photo_url,
+	(SELECT CASE WHEN (SELECT c.`check_status` FROM `rms_user_check` c WHERE c.`user_id` = u.`id` AND c.`check_type`= 1 AND c.`delete_flag`=0 LIMIT 1) IS NULL THEN 3 ELSE (SELECT c.`check_status` FROM `rms_user_check` c WHERE c.`user_id` = u.`id` AND c.`check_type`= 1 AND c.`delete_flag`=0 LIMIT 1) END) AS real_name_check_status,
+	(SELECT CASE WHEN (SELECT c.`check_status` FROM `rms_user_check` c WHERE c.`user_id` = u.`id` AND c.`check_type`= 2 AND c.`delete_flag`=0 LIMIT 1) IS NULL THEN 3 ELSE (SELECT c.`check_status` FROM `rms_user_check` c WHERE c.`user_id` = u.`id` AND c.`check_type`= 2 AND c.`delete_flag`=0 LIMIT 1) END )AS company_check_status,
+	(SELECT CASE WHEN COUNT(*)>0 THEN 1 ELSE 0 END FROM rms_user_business_type typ WHERE typ.`user_id`=u.`id` AND typ.`delete_flag`=0) AS business_type_status,
+	(SELECT company_name FROM rms_user_check WHERE user_id=#{uid} AND check_type=2 AND check_status=2 AND delete_flag=0 LIMIT 1) as company_name,
+	(SELECT GROUP_CONCAT(CASE WHEN business_type=1 THEN '机票' WHEN business_type=2 THEN '酒店' WHEN business_type=3 THEN '自由行'
+	WHEN business_type=4 THEN '跟团行' END) FROM `rms_user_business_type` WHERE user_id=#{uid} AND delete_flag=0) as business_types
+	FROM rms_user u WHERE u.`user_type`=3 AND u.`delete_flag`=0 and u.id=#{uid})res
+	LEFT JOIN `res_competitive_level` le ON res.score BETWEEN le.`start_score` AND le.`end_score`
+  </select>
+  <select id="selectByTel" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		*
+		from rms_user
+		where tel = #{tel,jdbcType=VARCHAR} and delete_flag=0	
+	</select>
+	<select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		*
+		from rms_user
+		where tel = #{username,jdbcType=VARCHAR} and user_type=3 and delete_flag=0 and status=1	
+	</select>
+	
+     <select id="selectByCUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		*
+		from rms_user
+		where tel = #{username,jdbcType=VARCHAR} and user_type=2 and delete_flag=0
+	</select>
+	
+	<!-- ���Ӿ����� -->
+	<update id="addScore">
+		UPDATE rms_user SET score=IFNULL(score,0)+#{score} WHERE id=#{id}
+	</update>
+	
+	<!-- ���ӽ�� -->
+	<update id="addGrabValue">
+		UPDATE rms_user SET score=IFNULL(grab_value,0)+#{grabValue} WHERE id=#{id}
+	</update>
+	
+	<!-- ��ѯ�̼Ҿ�Ӫ��· -->
+	<select id="listBusinessUserLine" resultType="java.lang.Long">
+		select id from  r_user_business_line where delete_flag=0 and user_id=#{userId}
+	</select>
+	<!-- 获取主页信息数据 -->
+  <select id="getMainViewInfo" resultMap="MainInfo" parameterType="cn.com.ubing.common.dto.RequestDto" >
+  	<![CDATA[SELECT 
+	(SELECT COUNT(*) FROM pub_plan t WHERE t.`user_id`=#{uid} AND t.`delete_flag`=0) AS plan,
+	(SELECT COUNT(res.id) FROM((SELECT t.id	
+		FROM `pub_requirement_personal_visit` t WHERE t.`id` IN
+		(SELECT u.`requirement_id` FROM `pub_requirement_user` u WHERE u.`delete_flag`=0 AND u.`requirement_type`= 3 AND u.`user_id`=#{uid}))
+	UNION ALL
+		(SELECT t.`id`
+		FROM `pub_requirement_group_visit` t WHERE t.`id` IN
+		(SELECT u.`requirement_id` FROM `pub_requirement_user` u WHERE u.`delete_flag`=0 AND u.`requirement_type`= 4 AND u.`user_id`=#{uid}))
+	)res) AS requirement,
+	(SELECT COUNT(*) FROM pub_plan p 
+		LEFT JOIN pub_appraisal a ON p.`id`= a.`plan_id` AND a.`from_id`=#{uid} AND a.`status`=1 AND a.`delete_flag`=0
+		WHERE a.`content` IS NULL AND p.`status`=2 AND p.`user_id`=#{uid}) AS appraisal,
+	(SELECT COUNT(*) FROM `msg_info` t WHERE t.`to_id`=#{uid} AND t.`status`=0) AS message,
+	(SELECT COUNT(*) FROM `pub_broadcast_send_user` t WHERE t.`user_id`=#{uid} AND t.`status`=0 AND t.`delete_flag`=0) AS broadcast,
+	(SELECT nickname FROM rms_user WHERE id=#{uid}) AS NAME,
+	(SELECT `save_path` FROM `res_attachment` WHERE id=(SELECT image__attahcment_id FROM rms_user WHERE id=#{uid})) AS pho_url,
+	(SELECT NAME FROM res_competitive_level WHERE start_score <= (SELECT score FROM rms_user WHERE id=#{uid}) AND end_score > (SELECT score FROM rms_user WHERE id=#{uid})) AS LEVEL,
+	23 AS ticket_value,
+	34 AS hotel_value,
+	45 AS personal_value,
+	56 AS group_value,
+	(SELECT CASE WHEN(SELECT t.`id` FROM `rms_user_business_type` t WHERE t.`user_id`=#{uid} AND t.`delete_flag`=0 AND t.`business_type`=1) IS NULL THEN 0 ELSE 1 END) AS ticket_status,
+	(SELECT CASE WHEN(SELECT t.`id` FROM `rms_user_business_type` t WHERE t.`user_id`=#{uid} AND t.`delete_flag`=0 AND t.`business_type`=2) IS NULL THEN 0 ELSE 1 END) AS hotel_status,
+	(SELECT CASE WHEN(SELECT t.`id` FROM `rms_user_business_type` t WHERE t.`user_id`=#{uid} AND t.`delete_flag`=0 AND t.`business_type`=3) IS NULL THEN 0 ELSE 1 END) AS personal_status,
+	(SELECT CASE WHEN(SELECT t.`id` FROM `rms_user_business_type` t WHERE t.`user_id`=#{uid} AND t.`delete_flag`=0 AND t.`business_type`=4) IS NULL THEN 0 ELSE 1 END) AS group_status
+	]]>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from rms_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update rms_user set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.rms.model.RmsUser" >
+    insert into rms_user (id, create_time, update_time, 
+      delete_flag, user_type, username, 
+      password, password_key, nickname, 
+      tel, email, number, 
+      score, status, real_name_check_status, 
+      company_check_status, image__attahcment_id, role_id, 
+      weixin_open_id, weixin_bound_flag, signature, xinge_token, app_type
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{userType,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{passwordKey,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, 
+      #{score,jdbcType=DOUBLE}, #{status,jdbcType=INTEGER}, #{realNameCheckStatus,jdbcType=INTEGER}, 
+      #{companyCheckStatus,jdbcType=INTEGER}, #{imageAttahcmentId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 
+      #{weixinOpenId,jdbcType=VARCHAR}, #{weixinBoundFlag,jdbcType=INTEGER}, #{signature,jdbcType=VARCHAR}, #{xingeToken,jdbcType=VARCHAR}, #{appType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <!-- ����ͷ����Ϣ -->
+  <update id="setbusinessPhoto" parameterType="cn.com.ubing.rms.dto.BusinessUserSetPhotoRequestDto" >
+  	update rms_user
+  	set image__attahcment_id =#{imageId}
+  	where id = #{uid}
+  </update>
+  
+    <update id="setUserPhoto" parameterType="cn.com.ubing.rms.dto.UserSetPhotoRequestDto" >
+  	update rms_user
+  	set image__attahcment_id =#{imageId}
+  	where id = #{uid}
+  </update>
+  
+  <update id="updateUserInfoForXinge" parameterType="cn.com.ubing.rms.model.RmsUser" >
+  	update rms_user set xinge_token = null where xinge_token = #{xingeToken,jdbcType=VARCHAR};
+  	update rms_user set xinge_token = null where app_type = #{appType,jdbcType=INTEGER}
+    and xinge_token = #{xingeToken,jdbcType=VARCHAR};
+  	update rms_user
+    set xinge_token = #{xingeToken,jdbcType=VARCHAR},
+      app_type = #{appType,jdbcType=INTEGER}
+      where id= #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.rms.model.RmsUser" >
+     update rms_user
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      user_type = #{userType,jdbcType=INTEGER},
+      username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      password_key = #{passwordKey,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
+      score = #{score,jdbcType=DOUBLE},
+      status = #{status,jdbcType=INTEGER},
+      real_name_check_status = #{realNameCheckStatus,jdbcType=INTEGER},
+      company_check_status = #{companyCheckStatus,jdbcType=INTEGER},
+      image__attahcment_id = #{imageAttahcmentId,jdbcType=BIGINT},
+      role_id = #{roleId,jdbcType=BIGINT},
+      weixin_open_id = #{weixinOpenId,jdbcType=VARCHAR},
+      weixin_bound_flag = #{weixinBoundFlag,jdbcType=INTEGER},
+      signature = #{signature,jdbcType=VARCHAR},
+      xinge_token = #{xingeToken,jdbcType=VARCHAR},
+      app_type = #{appType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  	<!-- 获取主页信息数据 
+  <select id="getUserImageAndNickNameInfo" resultMap="userInfo" parameterType="cn.com.ubing.common.dto.RequestDto" >
+   SELECT    
+    t1.id,t1.`email`,t1.`nickname`,
+    t2.save_path AS pho_url
+    FROM rms_user t1
+    LEFT JOIN res_attachment t2 ON t2.`id`=t1.`image__attahcment_id`
+    WHERE t1.id=#{uid}
+  </select> -->
+  
+  
+</mapper>

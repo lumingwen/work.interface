@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.rms.dao.RmsUserTitleMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.rms.model.RmsUserTitle" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+  </resultMap>
+  
+  	<resultMap id="dtoBaseResultMap"
+		type="cn.com.ubing.rms.dto.RmsGoldBusinessDto" extends="BaseResultMap">
+		<result column="gold_name" property="goldName"
+			jdbcType="VARCHAR" />
+		<result column="gold_tel" property="goldTel"
+			jdbcType="VARCHAR" />
+		<result column="gold_email" property="goldEmail"
+			jdbcType="VARCHAR" />
+		<result column="gold_rloe_id" property="goldRloeId" jdbcType="BIGINT" />
+		<result column="gold_id" property="goldId" jdbcType="BIGINT" />
+	</resultMap>
+   
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, type, user_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from rms_user_title
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getByUserIdAndType" resultMap="BaseResultMap" parameterType="cn.com.ubing.rms.model.RmsUserTitle" >
+    select 
+    <include refid="Base_Column_List" />
+    from rms_user_title
+    where id = #{userId,jdbcType=BIGINT} and type = #{type,jdbcType=INTEGER} and delete_flag=0
+  </select>
+  <select id="getTitleListByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from rms_user_title
+    where user_id = #{userId,jdbcType=BIGINT} and delete_flag=0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from rms_user_title
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.rms.model.RmsUserTitle" >
+    insert into rms_user_title (id, create_time, update_time, 
+      delete_flag, type, user_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.rms.model.RmsUserTitle" >
+    insert into rms_user_title
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.rms.model.RmsUserTitle" >
+    update rms_user_title
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.rms.model.RmsUserTitle" >
+    update rms_user_title
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+   <sql id="Base_Column_List1" >
+    t.id, t.create_time, t.update_time, t.delete_flag, t.type, t.user_id
+  </sql>
+  <select id="getGoldBusiness" resultMap="dtoBaseResultMap" parameterType="java.lang.Long">
+    select 
+    <include refid="Base_Column_List1" /> ,
+     t1.id gold_id,
+     t1.username gold_name,
+     t1.email  gold_email,
+     t1.tel  gold_tel,
+     t1.role_id gold_role_id  
+    from rms_user_title t
+    LEFT JOIN rms_user t1 ON t.user_id = t1.id
+    where
+    t.delete_flag=0
+    and
+    t.type = 3
+    and 
+    t.user_id not in(
+    select t2.user_id
+    from
+    pub_requirement_user t2
+    where
+    t2.delete_flag=0
+    and
+    t2.requirement_id = #{requirementId,jdbcType=BIGINT}
+    )
+  </select>
+  
+</mapper>

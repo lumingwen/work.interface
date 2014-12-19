@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResPlanLibraryPersonalVisitDestinationMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResPlanLibraryPersonalVisitDestination" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="personal_visit_id" property="personalVisitId" jdbcType="BIGINT" />
+    <result column="destination_id" property="destinationId" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="DtoResultMap" type="cn.com.ubing.res.dto.ResPlanLibraryPersonalVisitDestinationDto" >
+  	<result column="destination_id" property="destinationId" jdbcType="VARCHAR" />
+  	<result column="destination_name" property="destinationName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, personal_visit_id, destination_id
+  </sql>
+  <select id="selectDto" resultMap="DtoResultMap" parameterType="java.lang.Long" >
+  	SELECT t.`destination_id`,
+	(SELECT cname FROM res_dict WHERE id=t.`destination_id`) AS destination_name
+	FROM res_plan_library_personal_visit_destination t
+	WHERE t.`delete_flag`=0 AND t.`personal_visit_id`=#{planId}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_plan_library_personal_visit_destination
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_plan_library_personal_visit_destination
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.res.model.ResPlanLibraryPersonalVisitDestination" >
+    insert into res_plan_library_personal_visit_destination (id, create_time, update_time, 
+      delete_flag, personal_visit_id, 
+      destination_id)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{personalVisitId,jdbcType=BIGINT}, 
+      #{destinationId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.res.model.ResPlanLibraryPersonalVisitDestination" >
+    insert into res_plan_library_personal_visit_destination
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="personalVisitId != null" >
+        personal_visit_id,
+      </if>
+      <if test="destinationId != null" >
+        destination_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="personalVisitId != null" >
+        #{personalVisitId,jdbcType=BIGINT},
+      </if>
+      <if test="destinationId != null" >
+        #{destinationId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.res.model.ResPlanLibraryPersonalVisitDestination" >
+    update res_plan_library_personal_visit_destination
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="personalVisitId != null" >
+        personal_visit_id = #{personalVisitId,jdbcType=BIGINT},
+      </if>
+      <if test="destinationId != null" >
+        destination_id = #{destinationId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResPlanLibraryPersonalVisitDestination" >
+    update res_plan_library_personal_visit_destination
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      personal_visit_id = #{personalVisitId,jdbcType=BIGINT},
+      destination_id = #{destinationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResLastGoodsMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResLastGoods" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="popular_reasons" property="popularReasons" jdbcType="VARCHAR" />
+    <result column="fee_description" property="feeDescription" jdbcType="VARCHAR" />
+    <result column="display_in_home_page" property="displayInHomePage" jdbcType="INTEGER" />
+    <result column="focus_image_in_home_page" property="focusImageInHomePage" jdbcType="INTEGER" />
+    <result column="main_image_id" property="mainImageId" jdbcType="BIGINT" />
+    <result column="departure_place" property="departurePlace" jdbcType="VARCHAR" />
+    <result column="fee_exclude" property="feeExclude" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="WelfareListDto" type="cn.com.ubing.res.dto.WelfareListDto" >
+  	<result column="welfare_id" property="welfareId" jdbcType="VARCHAR" />
+  	<result column="welfare_type" property="welfareType" jdbcType="VARCHAR" />
+  	<result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+  	<result column="welfare_title" property="welfareTitle" jdbcType="VARCHAR" />
+  	<result column="welfare_url" property="welfareUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, serial_number, title, start_time, end_time, 
+    popular_reasons, fee_description, display_in_home_page, focus_image_in_home_page, 
+    main_image_id, departure_place, fee_exclude
+  </sql>
+  <select id="queryWelfareList" resultMap="WelfareListDto" >
+  	<![CDATA[SELECT t.`create_time`,t.`id` AS welfare_id,1 AS welfare_type,null as welfare_url,
+	(SELECT save_path FROM `res_attachment` WHERE id=t.`main_image_id`) AS image_url,
+	t.`title` AS welfare_title FROM res_last_goods t
+	WHERE t.`start_time`<NOW() AND t.`end_time`>NOW()
+	ORDER BY t.`create_time` DESC]]>
+  </select>
+  <select id="selectFocusList" resultMap="BaseResultMap" >
+  	<![CDATA[SELECT * FROM res_last_goods t
+	WHERE t.`start_time`<=NOW() AND t.`end_time`>NOW()
+	AND t.`display_in_home_page`=1 AND t.`focus_image_in_home_page`=1
+	AND t.`delete_flag`=0
+	ORDER BY t.`create_time` DESC LIMIT 5]]>
+  </select>
+  <select id="selectFirst" resultMap="BaseResultMap" >
+  	<![CDATA[SELECT * FROM res_last_goods t
+	WHERE t.`start_time`<=NOW() AND t.`end_time`>NOW()
+	AND t.`display_in_home_page`=1 AND t.`delete_flag`=0
+	ORDER BY t.`create_time` desc LIMIT 1]]>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_last_goods
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_last_goods
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.res.model.ResLastGoods" >
+    insert into res_last_goods (id, create_time, update_time, 
+      delete_flag, serial_number, title, 
+      start_time, end_time, popular_reasons, 
+      fee_description, display_in_home_page, focus_image_in_home_page, 
+      main_image_id, departure_place, fee_exclude)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{serialNumber,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{popularReasons,jdbcType=VARCHAR}, 
+      #{feeDescription,jdbcType=VARCHAR}, #{displayInHomePage,jdbcType=INTEGER}, #{focusImageInHomePage,jdbcType=INTEGER}, 
+      #{mainImageId,jdbcType=BIGINT}, #{departurePlace,jdbcType=VARCHAR}, #{feeExclude,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResLastGoods" >
+    update res_last_goods
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      popular_reasons = #{popularReasons,jdbcType=VARCHAR},
+      fee_description = #{feeDescription,jdbcType=VARCHAR},
+      display_in_home_page = #{displayInHomePage,jdbcType=INTEGER},
+      focus_image_in_home_page = #{focusImageInHomePage,jdbcType=INTEGER},
+      main_image_id = #{mainImageId,jdbcType=BIGINT},
+      departure_place = #{departurePlace,jdbcType=VARCHAR},
+      fee_exclude = #{feeExclude,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubBroadcastSendDetailMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubBroadcastSendDetail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="image_id" property="imageId" jdbcType="BIGINT" />
+    <result column="broadcast_send_id" property="broadcastSendId" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="DtoResultMap" type="cn.com.ubing.pub.dto.BroadcastDto" >
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, title, url, content, image_id, broadcast_send_id
+  </sql>
+  <!-- 根据播报ID查询用户新收到的旅游播报信息 -->
+  <select id="getBroadcastListBySendId" resultMap="DtoResultMap" parameterType="java.lang.Long" >
+    SELECT d.`title`,d.`url`,d.`content`,(SELECT att.save_path FROM res_attachment att WHERE att.id=d.`image_id`) AS image_url
+	FROM pub_broadcast_send_detail d 
+	WHERE d.delete_flag = 0 
+	AND d.`broadcast_send_id`=#{sendId}; 
+  </select>
+  <!-- 更改获取后的播报信息状态 -->
+  <update id="updateSendStatusByUser" parameterType="cn.com.ubing.common.dto.RequestDto" >
+	UPDATE pub_broadcast_send_user u SET u.`status`= 1,u.`read_time`=NOW() WHERE u.`status`= 0 and u.delete_flag=0 AND u.`user_id`= #{uid}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_broadcast_send_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update pub_broadcast_send_detail set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubBroadcastSendDetail" >
+    insert into pub_broadcast_send_detail (id, create_time, update_time, 
+      delete_flag, title, url, 
+      content, image_id, broadcast_send_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{imageId,jdbcType=BIGINT}, #{broadcastSendId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.pub.model.PubBroadcastSendDetail" >
+    insert into pub_broadcast_send_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="imageId != null" >
+        image_id,
+      </if>
+      <if test="broadcastSendId != null" >
+        broadcast_send_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        #{imageId,jdbcType=BIGINT},
+      </if>
+      <if test="broadcastSendId != null" >
+        #{broadcastSendId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.pub.model.PubBroadcastSendDetail" >
+    update pub_broadcast_send_detail
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        image_id = #{imageId,jdbcType=BIGINT},
+      </if>
+      <if test="broadcastSendId != null" >
+        broadcast_send_id = #{broadcastSendId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubBroadcastSendDetail" >
+    update pub_broadcast_send_detail
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      image_id = #{imageId,jdbcType=BIGINT},
+      broadcast_send_id = #{broadcastSendId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

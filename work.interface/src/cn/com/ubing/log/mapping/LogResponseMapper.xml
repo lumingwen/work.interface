@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.log.dao.LogResponseMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.log.model.LogResponse" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="VARCHAR" />
+    <result column="token" property="token" jdbcType="VARCHAR" />
+    <result column="result_code" property="resultCode" jdbcType="VARCHAR" />
+    <result column="result_info" property="resultInfo" jdbcType="VARCHAR" />
+    <result column="full_content" property="fullContent" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, serial_number, device_id, uid, token, 
+    result_code, result_info, full_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from log_response
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update log_response set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.log.model.LogResponse" >
+    insert into log_response (id, create_time, update_time, 
+      delete_flag, serial_number, device_id, 
+      uid, token, result_code, 
+      result_info, full_content)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{serialNumber,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
+      #{uid,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, 
+      #{resultInfo,jdbcType=VARCHAR}, #{fullContent,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.log.model.LogResponse" >
+    update log_response
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=VARCHAR},
+      token = #{token,jdbcType=VARCHAR},
+      result_code = #{resultCode,jdbcType=VARCHAR},
+      result_info = #{resultInfo,jdbcType=VARCHAR},
+      full_content = #{fullContent,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

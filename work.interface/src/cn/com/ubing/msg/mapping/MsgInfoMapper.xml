@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.msg.dao.MsgInfoMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.msg.model.MsgInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="group_id" property="groupId" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="display" property="display" jdbcType="INTEGER" />
+    <result column="from_id" property="fromId" jdbcType="BIGINT" />
+    <result column="to_id" property="toId" jdbcType="BIGINT" />
+    <result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, group_id, content, send_time, status, 
+    display, from_id, to_id, read_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from msg_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update msg_info set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+    <delete id="deleteMessageByGroupId" parameterType="java.lang.Long" >
+    update msg_info set delete_flag=1
+    where group_id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.msg.model.MsgInfo" >
+    insert into msg_info (id, create_time, update_time, 
+      delete_flag, group_id, content, 
+      send_time, status, display, 
+      from_id, to_id, read_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{groupId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{sendTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{display,jdbcType=INTEGER}, 
+      #{fromId,jdbcType=BIGINT}, #{toId,jdbcType=BIGINT}, #{readTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <update id="updateToRead" parameterType="cn.com.ubing.msg.dto.MessageRequestDto" >
+  	UPDATE msg_info t SET t.`status`=1 WHERE t.`group_id`= #{groupId} AND t.`to_id`= #{uid} and t.`status`=0
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.msg.model.MsgInfo" >
+    update msg_info
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      group_id = #{groupId,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      display = #{display,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=BIGINT},
+      to_id = #{toId,jdbcType=BIGINT},
+      read_time = #{readTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

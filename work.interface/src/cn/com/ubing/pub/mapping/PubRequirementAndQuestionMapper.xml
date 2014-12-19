@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubRequirementAndQuestionMapper">
+
+	<resultMap type="cn.com.ubing.pub.dto.PushRequirementDto" id="PushRequirementDto">
+		<result column="_requirement_type" property="requirementType" jdbcType="INTEGER"/>
+		<result column="_requirement_id" property="requirementId" jdbcType="BIGINT"/>
+		<result column="_result" property="result" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	
+	<resultMap type="cn.com.ubing.pub.dto.PushQuestionDto" id="PushQuestionDto">
+		<result column="_question_id" property="questionId" jdbcType="INTEGER"/>
+		<result column="_result" property="result" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="RmsUserBaseResultMap" type="cn.com.ubing.rms.dto.RmsUserDto">
+		<id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_type" property="userType" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="password_key" property="passwordKey" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="real_name_check_status" property="realNameCheckStatus" jdbcType="INTEGER" />
+    <result column="company_check_status" property="companyCheckStatus" jdbcType="INTEGER" />
+    <result column="image__attahcment_id" property="imageAttahcmentId" jdbcType="BIGINT" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    <result column="weixin_open_id" property="weixinOpenId" jdbcType="VARCHAR" />
+    <result column="weixin_bound_flag" property="weixinBoundFlag" jdbcType="INTEGER" />
+    <result column="signature" property="signature" jdbcType="VARCHAR" />
+    <result column="xinge_token" property="xingeToken" jdbcType="VARCHAR" />
+    <result column="app_type" property="appType" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getPushRequirementUserIds" parameterType="cn.com.ubing.pub.dto.PushRequirementDto" statementType="CALLABLE">
+		{call sp_push_requirement(  
+	        #{requirementType,jdbcType=INTEGER, mode=IN},  
+	        #{requirementId, jdbcType=BIGINT,mode=IN},   
+	        #{result, jdbcType=VARCHAR,mode=OUT}  
+	      )} 
+	</select>
+	
+	
+	<select id="getPushQuestionUserIds" parameterType="cn.com.ubing.pub.dto.PushQuestionDto" statementType="CALLABLE">
+		{call sp_push_question(
+	        #{questionId, jdbcType=BIGINT,mode=IN},   
+	        #{result, jdbcType=VARCHAR,mode=OUT}  
+	      )} 
+	</select>
+	
+	<select id="getRmsUserByIds" resultMap="RmsUserBaseResultMap">
+		select * from rms_user where id in (${userIds})
+	</select>
+</mapper>

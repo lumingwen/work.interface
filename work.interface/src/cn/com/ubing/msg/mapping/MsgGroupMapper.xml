@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.msg.dao.MsgGroupMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.msg.model.MsgGroup" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="from_id" property="fromId" jdbcType="BIGINT" />
+    <result column="to_id" property="toId" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, from_id, to_id, type
+  </sql>
+  <!-- 查询消息组id -->
+  <select id="selectGroupId" resultMap="BaseResultMap" parameterType="cn.com.ubing.msg.model.MsgGroup" >
+  	select 
+    <include refid="Base_Column_List" />
+    from msg_group t
+    where ((t.`from_id`= #{fromId} AND t.`to_id`= #{toId}) OR (t.`to_id`=#{fromId} AND t.`from_id`=#{toId}))
+    AND t.`delete_flag`=0
+    limit 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from msg_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update msg_group set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.msg.model.MsgGroup" >
+    insert into msg_group (id, create_time, update_time, 
+      delete_flag, from_id, to_id, 
+      type)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{fromId,jdbcType=BIGINT}, #{toId,jdbcType=BIGINT}, 
+      #{type,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.msg.model.MsgGroup" >
+    update msg_group
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=BIGINT},
+      to_id = #{toId,jdbcType=BIGINT},
+      type = #{type,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
+  <!-- 扩展 -->
+  
+  <resultMap id="MessageGroupDtoResultMap" type="cn.com.ubing.msg.dto.MessageGroupDto" >
+    <result column="fromId" property="fromId" jdbcType="VARCHAR" />
+    <result column="imageAttahcment" property="imageAttahcment" jdbcType="VARCHAR" />
+    <result column="fromName" property="fromName" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="unReadCount" property="unReadCount" jdbcType="VARCHAR" />
+    <result column="groupId" property="groupId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="sendTime" property="sendTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <resultMap id="GroupMessageDtoResultMap" type="cn.com.ubing.msg.dto.GroupMessageDto" >
+    <result column="fromId" property="partakeUserId" jdbcType="VARCHAR" />
+    <result column="imageAttahcment" property="imageAttahcment" jdbcType="VARCHAR" />
+    <result column="fromName" property="fromUserName" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="unReadCount" property="unReadCount" jdbcType="VARCHAR" />
+    <result column="groupId" property="groupId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="sendTime" property="sendTime" jdbcType="VARCHAR" />
+    <result column="readTime" property="readTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  
+  
+  <resultMap id="MessageDtoResultMap" type="cn.com.ubing.msg.dto.MessageDto" >
+    <result column="fromId" property="fromId" jdbcType="VARCHAR" />
+    <result column="fromUserName" property="fromUserName" jdbcType="VARCHAR" />
+    <result column="fromImageAttahcment" property="fromImageAttahcment" jdbcType="VARCHAR" />
+    <result column="toId" property="toId" jdbcType="VARCHAR" />
+    <result column="toUserName" property="toUserName" jdbcType="VARCHAR" />
+    <result column="toImageAttahcment" property="toImageAttahcment" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="sendTime" property="sendTime" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="listMessageGroupDto" resultMap="MessageGroupDtoResultMap">
+	  SELECT 
+		CASE WHEN t.to_id=#{uid} THEN t.from_id ELSE t.to_id END AS fromId,
+		CASE WHEN t.to_id=#{uid} THEN t1.nickname ELSE t2.nickname END AS fromName,
+		(select save_path from res_attachment where id=(CASE WHEN t.to_id=#{uid} THEN t1.image__attahcment_id ELSE t2.image__attahcment_id END)) AS imageAttahcment,
+		(SELECT content FROM msg_info  WHERE delete_flag=0 AND group_id=t.id ORDER BY create_time DESC LIMIT 1) AS content,
+		(SELECT COUNT(*) FROM msg_info WHERE delete_flag=0 AND display=0 AND STATUS=0 AND group_id=t.id AND to_id=#{uid}) AS unReadCount,
+		t.id AS groupId,
+		t.type AS TYPE,
+		DATE_FORMAT(t.update_time,'%Y-%m-%d %H:%i:%s') AS sendTime
+	FROM msg_group t	
+	LEFT JOIN rms_user t1 ON t.from_id=t1.id
+	LEFT JOIN rms_user t2 ON t.to_id=t2.id
+		WHERE t.delete_flag=0
+		AND (t.from_id=#{uid} OR t.to_id=#{uid})
+	
+	UNION ALL
+	
+	SELECT 
+		t1.`from_id` AS fromId,t2.`image__attahcment_id` AS imageAttahcment,t2.`username` AS fromName,t1.`content` AS content,0 AS unReadCount,t1.id AS groupId,9 AS TYPE,DATE_FORMAT(t1.create_time,'%Y-%c-%d %h:%i:%s') AS sendTime
+	FROM  ask_question t1 
+		LEFT JOIN rms_user t2 ON t1.`from_id`=t2.id
+		WHERE t1.delete_flag=0
+		AND t1.id IN (
+			SELECT `question_id` FROM `ask_question_facilitator` WHERE delete_flag=0 AND facilitator_id=#{uid}
+		)
+  </select>
+  
+  
+  <select id="listMessageDetail" resultMap="MessageDtoResultMap">
+	  SELECT t.`from_id` AS fromId,t1.nickname AS fromUserName,
+	  (select save_path from res_attachment where id=t1.`image__attahcment_id`) AS fromImageAttahcment,
+	  t2.`id` AS toId,t2.nickname AS toUserName,
+	  (select save_path from res_attachment where id=t2.`image__attahcment_id`) AS toImageAttahcment,
+	  t.`content` AS content,DATE_FORMAT(t.create_time,'%Y-%c-%d %h:%i:%s') AS sendTime,t3.type
+		FROM msg_info t
+			LEFT JOIN rms_user t1 ON t1.id=t.from_id
+			LEFT JOIN rms_user t2 ON t2.id=t.to_id
+			JOIN msg_group t3 ON t3.id=t.group_id
+		WHERE t.delete_flag=0 AND t.`group_id`=#{groupId} AND t3.type=#{type}
+		ORDER BY t.create_time desc
+  </select>
+  
+  
+  <select id="listMessageDetailForAsk" resultMap="MessageDtoResultMap">
+	SELECT  
+	
+		t1.`from_id` AS fromId,t3.nickname AS fromUserName,t3.`image__attahcment_id` AS fromImageAttahcment,t2.`from_id` AS toId,t4.nickname AS toUserName,t4.`image__attahcment_id` AS toImageAttahcment,t1.`content` AS content,DATE_FORMAT(t1.create_time,'%Y-%c-%d %h:%i:%s') AS sendTime,9 AS TYPE
+	
+	FROM 
+	
+		`ask_answer` t1 
+	
+		JOIN `ask_question` t2 ON t1.`question_id`=t2.`id`
+		LEFT JOIN rms_user t3 ON t1.`from_id`=t3.`id`
+		LEFT JOIN rms_user t4 ON t2.`from_id`=t4.`id`
+	
+		WHERE t1.`delete_flag`=0 AND t2.`delete_flag`=0
+		AND t2.`id`=#{groupId}
+		AND t1.from_id=#{uid}
+  </select>
+  
+  
+  <select id="selectByUserId" resultMap="BaseResultMap">
+  	SELECT <include refid="Base_Column_List" /> 
+	FROM msg_group t WHERE (t.`from_id`=#{fromId} AND t.`to_id`=#{toId} and t.delete_flag=0 and t.type=2) OR (t.`from_id`=#{toId} AND t.`to_id`=#{fromId} and t.delete_flag=0 and t.type=2)
+  </select>
+  
+  <select id="queryAnswerCount" resultType="java.lang.Integer">
+  		select count(id) from ask_answer where delete_flag=0 and question_id=#{param1} and from_id=#{param2}
+  </select>
+  
+  
+  <select id="listMsgGroup" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from msg_group where delete_flag=0 and type=#{type} and (from_id=#{fromId} and to_id=#{toId}) or (from_id=#{toId} and to_id=#{fromId})
+  </select>
+  
+    
+  <select id="listGroupMessageDto" resultMap="GroupMessageDtoResultMap">
+	  SELECT 
+		CASE WHEN t.to_id=#{uid} THEN t.from_id ELSE t.to_id END AS fromId,
+		CASE WHEN t.to_id=#{uid} THEN t1.nickname ELSE t2.nickname END AS fromName,
+		(select save_path from res_attachment where id=(CASE WHEN t.to_id=#{uid} THEN t1.image__attahcment_id ELSE t2.image__attahcment_id END)) AS imageAttahcment,
+		(SELECT content FROM msg_info  WHERE delete_flag=0 AND group_id=t.id ORDER BY create_time DESC LIMIT 1) AS content,
+		(SELECT COUNT(*) FROM msg_info WHERE delete_flag=0 AND display=0 AND STATUS=0 AND group_id=t.id AND to_id=#{uid}) AS unReadCount,
+		t.id AS groupId,
+		t.type AS TYPE,
+		DATE_FORMAT(t.update_time,'%Y-%m-%d %H:%i:%s') AS sendTime
+	FROM msg_group t	
+	LEFT JOIN rms_user t1 ON t.from_id=t1.id
+	LEFT JOIN rms_user t2 ON t.to_id=t2.id
+		WHERE t.delete_flag=0
+		and (t.to_id=#{uid} or t.from_id=#{uid})
+
+  </select>
+</mapper>

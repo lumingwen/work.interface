@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubBroadcastSendMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubBroadcastSend" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="pub_first_level_id" property="pubFirstLevelId" jdbcType="BIGINT" />
+    <result column="pub_second_level_id" property="pubSecondLevelId" jdbcType="BIGINT" />
+    <result column="pub_third_level_id" property="pubThirdLevelId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, user_id, pub_first_level_id, pub_second_level_id, 
+    pub_third_level_id
+  </sql>
+  <select id="listBroadcastSendInfo" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  	SELECT send.* FROM pub_broadcast_send send
+	LEFT JOIN pub_broadcast_send_user us ON us.`broadcast_send_id`=send.`id` AND us.`user_id`=#{userId,jdbcType=BIGINT}
+	ORDER BY send.`create_time` DESC
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_broadcast_send
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_broadcast_send
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubBroadcastSend" >
+    insert into pub_broadcast_send (id, create_time, update_time, 
+      delete_flag, user_id, pub_first_level_id, 
+      pub_second_level_id, pub_third_level_id)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{pubFirstLevelId,jdbcType=BIGINT}, 
+      #{pubSecondLevelId,jdbcType=BIGINT}, #{pubThirdLevelId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.pub.model.PubBroadcastSend" >
+    insert into pub_broadcast_send
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="pubFirstLevelId != null" >
+        pub_first_level_id,
+      </if>
+      <if test="pubSecondLevelId != null" >
+        pub_second_level_id,
+      </if>
+      <if test="pubThirdLevelId != null" >
+        pub_third_level_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="pubFirstLevelId != null" >
+        #{pubFirstLevelId,jdbcType=BIGINT},
+      </if>
+      <if test="pubSecondLevelId != null" >
+        #{pubSecondLevelId,jdbcType=BIGINT},
+      </if>
+      <if test="pubThirdLevelId != null" >
+        #{pubThirdLevelId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.pub.model.PubBroadcastSend" >
+    update pub_broadcast_send
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="pubFirstLevelId != null" >
+        pub_first_level_id = #{pubFirstLevelId,jdbcType=BIGINT},
+      </if>
+      <if test="pubSecondLevelId != null" >
+        pub_second_level_id = #{pubSecondLevelId,jdbcType=BIGINT},
+      </if>
+      <if test="pubThirdLevelId != null" >
+        pub_third_level_id = #{pubThirdLevelId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubBroadcastSend" >
+    update pub_broadcast_send
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      pub_first_level_id = #{pubFirstLevelId,jdbcType=BIGINT},
+      pub_second_level_id = #{pubSecondLevelId,jdbcType=BIGINT},
+      pub_third_level_id = #{pubThirdLevelId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

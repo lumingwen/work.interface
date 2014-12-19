@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResCouponMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResCoupon" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="destination_id" property="destinationId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="money" property="money" jdbcType="INTEGER" />
+    <result column="coupon" property="coupon" jdbcType="VARCHAR" />
+    <result column="receive_status" property="receiveStatus" jdbcType="INTEGER" />
+    <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP" />
+    <result column="use_status" property="useStatus" jdbcType="INTEGER" />
+    <result column="use_time" property="useTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="cn.com.ubing.res.dto.ResCouponListDto" >
+  	<result column="type" property="type" jdbcType="VARCHAR" />
+  	<result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="VARCHAR" />
+    <result column="coupon_id" property="couponId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="DetailResultMap" type="cn.com.ubing.res.dto.ResCouponDetailResponseDto" >
+  	<result column="type" property="type" jdbcType="VARCHAR" />
+  	<result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="VARCHAR" />
+    <result column="coupon_id" property="couponId" jdbcType="VARCHAR" />
+    <result column="use_status" property="useStatus" jdbcType="VARCHAR" />
+    <result column="destinationName" property="destinationName" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, create_user_id, user_id, type, destination_id, 
+    name, start_time, end_time, money, coupon, receive_status, receive_time, use_status, 
+    use_time,remark
+  </sql>
+  <!-- 还有七天就要过期的优惠卷 -->
+  <select id="selectCountTimeOut" resultType="java.lang.Integer">
+  	<![CDATA[SELECT COUNT(id) FROM `res_coupon`
+	WHERE delete_flag = 0 AND user_id = #{uid} AND NOW() <= end_time AND use_status = 0 
+	AND DATE_FORMAT(end_time, '%Y%m%d') <= DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY),'%Y%m%d')]]>
+  </select>
+  <!-- 优惠卷详情 -->
+  <select id="selectDetail" resultMap="DetailResultMap" parameterType="cn.com.ubing.res.dto.ResCouponDetailRequestDto" >
+	SELECT CASE WHEN res.ustatus=1 THEN 1 WHEN res.ustatus=0 AND res.time_out=1 THEN 0 ELSE 2 END AS use_status,
+	res.* FROM(SELECT DATE_FORMAT(t.`end_time`,'%Y-%c-%d %H:%i:%s') AS end_time,remark,
+	(SELECT cname FROM res_dict WHERE id=t.destination_id) AS destinationName,
+	(CASE WHEN t.`end_time` > NOW() THEN 1 ELSE 0 END) AS time_out,	t.`type`,t.`name`,t.`money`,t.`use_status` ustatus
+	FROM res_coupon t WHERE t.`delete_flag`=0 AND t.user_id=#{uid} AND t.id=#{couponId}) res
+  </select>
+  <!-- 优惠卷列表 -->
+  <select id="queryList" resultMap="ListResultMap" parameterType="cn.com.ubing.res.dto.ResCouponListRequestDto" >
+	SELECT * FROM(
+		SELECT DATE_FORMAT(t.`end_time`,'%Y-%c-%d %H:%i:%s') AS end_time,
+		(CASE WHEN t.`end_time` > NOW() THEN 1 ELSE 0 END) AS time_out,
+		t.`type`,t.`name`,t.`money`,t.`use_status`,t.`id` as coupon_id
+		FROM res_coupon t WHERE t.`delete_flag`=0 AND t.`user_id`= #{uid}
+	)res WHERE 1=1
+	<if test="useStatus == 0">
+		and res.time_out=1 and res.use_status=0
+	</if>
+	<if test="useStatus == 1">
+		and res.use_status=1
+	</if>
+	<if test="useStatus == 2">
+		and res.time_out=0 and res.use_status=0
+	</if>
+	<!-- 下列条件用于选择优惠卷 -->
+	<if test="requirementType==1"> and (res.type=1 or res.type=-1)</if>
+	<if test="requirementType==2"> and (res.type=2 or res.type=-1)</if>
+	<if test="requirementType==3"> and (res.type=3 or res.type=-1)</if>
+	<if test="requirementType==4"> and (res.type=4 or res.type=-1)</if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_coupon
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.res.model.ResCoupon" >
+    insert into res_coupon (id, create_time, update_time, 
+      delete_flag, create_user_id, user_id, 
+      type, destination_id, name, 
+      start_time, end_time, money, 
+      coupon, receive_status, receive_time, 
+      use_status, use_time, remark)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{createUserId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{type,jdbcType=INTEGER}, #{destinationId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{money,jdbcType=INTEGER}, 
+      #{coupon,jdbcType=VARCHAR}, #{receiveStatus,jdbcType=INTEGER}, #{receiveTime,jdbcType=TIMESTAMP}, 
+      #{useStatus,jdbcType=INTEGER}, #{useTime,jdbcType=TIMESTAMP},#{remark,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResCoupon" >
+    update res_coupon
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      create_user_id = #{createUserId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      type = #{type,jdbcType=INTEGER},
+      destination_id = #{destinationId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      money = #{money,jdbcType=INTEGER},
+      coupon = #{coupon,jdbcType=VARCHAR},
+      receive_status = #{receiveStatus,jdbcType=INTEGER},
+      receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      use_status = #{useStatus,jdbcType=INTEGER},
+      use_time = #{useTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

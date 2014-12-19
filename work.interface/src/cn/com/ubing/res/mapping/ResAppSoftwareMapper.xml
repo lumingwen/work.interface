@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResAppSoftwareMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResAppSoftware" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="version_code" property="versionCode" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="force_update_flag" property="forceUpdateFlag" jdbcType="INTEGER" />
+    <result column="default_flag" property="defaultFlag" jdbcType="INTEGER" />
+    <result column="attachment_id" property="attachmentId" jdbcType="BIGINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="app_url" property="appUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="SystemVersion" type="cn.com.ubing.res.dto.SystemVersion" >
+  	<result column="type" property="type" jdbcType="VARCHAR" />
+   	<result column="version" property="version" jdbcType="VARCHAR" />
+   	<result column="app_url" property="appUrl" jdbcType="VARCHAR" />
+   	<result column="version_code" property="versionCode" jdbcType="VARCHAR" />
+    <result column="force_update_flag" property="forceUpdateFlag" jdbcType="VARCHAR" />
+    <result column="default_flag" property="defaultFlag" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, type, version, version_code, force_update_flag, default_flag, 
+    attachment_id, remark, app_url
+  </sql>
+  <select id="selectSystemVersion" resultMap="SystemVersion" parameterType="java.lang.Integer" >
+  	SELECT 
+	t.`type`,t.`version`,t.app_url,t.`version_code`,t.`force_update_flag`,t.`default_flag`,(SELECT save_path FROM `res_attachment` WHERE id=t.`attachment_id`) AS url
+	FROM res_app_software t WHERE t.`default_flag`=1 AND t.`delete_flag`=0 and type=#{type} ORDER BY t.`version` DESC LIMIT 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_app_software
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_app_software
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.res.model.ResAppSoftware" >
+    insert into res_app_software (id, create_time, update_time, 
+      delete_flag, type, version, version_code,
+      force_update_flag, default_flag, attachment_id, 
+      remark,app_url)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{version,jdbcType=VARCHAR}, #{versionCode}
+      #{forceUpdateFlag,jdbcType=INTEGER}, #{defaultFlag,jdbcType=INTEGER}, #{attachmentId,jdbcType=BIGINT}, 
+      #{remark,jdbcType=VARCHAR},#{appUrl,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResAppSoftware" >
+    update res_app_software
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      version = #{version,jdbcType=VARCHAR},
+      version_code = #{versionCode},
+      force_update_flag = #{forceUpdateFlag,jdbcType=INTEGER},
+      default_flag = #{defaultFlag,jdbcType=INTEGER},
+      attachment_id = #{attachmentId,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      app_url = #{appUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

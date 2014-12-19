@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResCommonContactsMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResCommonContacts" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="certificate_type_id" property="certificateTypeId" jdbcType="BIGINT" />
+    <result column="certificate_code" property="certificateCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="cn.com.ubing.res.dto.ResCommonContactsDto" >
+  	<result column="id" property="contactId" jdbcType="VARCHAR" />
+   	<result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="certificate_type_name" property="certificateTypeName" jdbcType="VARCHAR" />
+    <result column="certificate_code" property="certificateCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="DetailResultMap" type="cn.com.ubing.res.dto.ResCommonContactsDetailResponseDto" >
+  	<result column="id" property="contactId" jdbcType="VARCHAR" />
+   	<result column="name" property="name" jdbcType="VARCHAR" />
+   	<result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="certificate_type_id" property="certificateTypeId" jdbcType="VARCHAR" />
+    <result column="certificate_type_name" property="certificateTypeName" jdbcType="VARCHAR" />
+    <result column="certificate_code" property="certificateCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, user_id, name, tel, certificate_type_id, 
+    certificate_code
+  </sql>
+  <!-- 查询常用联系人列表 -->
+  <select id="queryList" resultMap="ListResultMap" parameterType="cn.com.ubing.res.dto.ResCommonContactsListRequestDto" >
+  	SELECT id,NAME,certificate_code,update_time,
+	(SELECT cname FROM res_dict WHERE id=certificate_type_id) AS certificate_type_name
+	FROM res_common_contacts WHERE delete_flag=0 AND user_id = #{uid}
+  </select>
+  <!-- 查询常用联系人详细信息 -->
+  <select id="getDetail" resultMap="DetailResultMap" parameterType="cn.com.ubing.res.dto.ResCommonContactsDetailRequestDto" >
+  	SELECT id,NAME,tel,certificate_code,certificate_type_id,
+	(SELECT cname FROM res_dict WHERE id=certificate_type_id) AS certificate_type_name
+	FROM res_common_contacts WHERE delete_flag=0 AND user_id = #{uid} and id=#{contactId}
+  </select>
+  <select id="selectByNameAndTel" resultMap="BaseResultMap" parameterType="cn.com.ubing.res.model.ResCommonContacts" >
+  	select 
+    <include refid="Base_Column_List" />
+    from res_common_contacts
+    where name = #{name} and tel = #{tel} and delete_flag=0 limit 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_common_contacts
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_common_contacts
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.res.model.ResCommonContacts" >
+    insert into res_common_contacts (id, create_time, update_time, 
+      delete_flag, user_id, name, 
+      tel, certificate_type_id, certificate_code
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{certificateTypeId,jdbcType=BIGINT}, #{certificateCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResCommonContacts" >
+    update res_common_contacts
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      certificate_type_id = #{certificateTypeId,jdbcType=BIGINT},
+      certificate_code = #{certificateCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResLastGoodsTripMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResLastGoodsTrip" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="last_goods_id" property="lastGoodsId" jdbcType="BIGINT" />
+    <result column="day_of_trip" property="dayOfTrip" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="DtoResultMap" type="cn.com.ubing.res.dto.ResLastGoodsTripDto" >
+  	<result column="day_of_trip" property="dayOfTrip" jdbcType="VARCHAR" />
+  	<result column="title" property="title" jdbcType="VARCHAR" />
+  	<result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, last_goods_id, day_of_trip, title, description
+  </sql>
+  <select id="selectByLastGoodsId" resultMap="DtoResultMap" parameterType="java.lang.Long" >
+  	select 
+    day_of_trip,title,description
+    from res_last_goods_trip
+    where last_goods_id = #{id,jdbcType=BIGINT} and delete_flag=0
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_last_goods_trip
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_last_goods_trip
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.res.model.ResLastGoodsTrip" >
+    insert into res_last_goods_trip (id, create_time, update_time, 
+      delete_flag, last_goods_id, day_of_trip, 
+      title, description)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{lastGoodsId,jdbcType=BIGINT}, #{dayOfTrip,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResLastGoodsTrip" >
+    update res_last_goods_trip
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      last_goods_id = #{lastGoodsId,jdbcType=BIGINT},
+      day_of_trip = #{dayOfTrip,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

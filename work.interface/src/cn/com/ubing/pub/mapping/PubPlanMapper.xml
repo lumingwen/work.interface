@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubPlanMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubPlan" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="requirement_type" property="requirementType" jdbcType="INTEGER" />
+    <result column="requirement_id" property="requirementId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="child_price" property="childPrice" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="read_status" property="readStatus" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="deal_time" property="dealTime" jdbcType="TIMESTAMP" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="point" property="point" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+    <result column="history_plan_id" property="historyPlanId" jdbcType="BIGINT" />
+    <result column="plan_type" property="planType" jdbcType="INTEGER" />
+    <result column="a1" property="a1" jdbcType="VARCHAR" />
+    <result column="a2" property="a2" jdbcType="VARCHAR" />
+    <result column="a3" property="a3" jdbcType="VARCHAR" />
+    <result column="a4" property="a4" jdbcType="VARCHAR" />
+    <result column="a5" property="a5" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="cn.com.ubing.pub.dto.HistoryPlanListDto" >
+ 	<result column="plan_id" property="planId" jdbcType="VARCHAR" />
+	<result column="submit_time" property="submitTime" jdbcType="VARCHAR" />
+	<result column="price" property="price" jdbcType="VARCHAR" />
+	<result column="child_price" property="childPrice" jdbcType="VARCHAR" />
+	<result column="plan_title" property="planTitle" jdbcType="VARCHAR" />
+	<result column="plan_content" property="planContent" jdbcType="VARCHAR" />
+	<result column="plan_relation_id" property="planRelationId" jdbcType="VARCHAR" />
+	<result column="plan_relation_title" property="planRelationTitle" jdbcType="VARCHAR" />
+	<result column="plan_type" property="planType" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="DtoResultMap" type="cn.com.ubing.pub.dto.PubPlanDto" extends="BaseResultMap" >
+  	<result column="username" property="username" jdbcType="VARCHAR" />
+  	<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+  </resultMap>
+  
+ <resultMap id="PubPlanDtoResultMap" type="cn.com.ubing.pub.dto.CPubPlanDto" >
+  	<result column="id" property="id" jdbcType="BIGINT" />
+  	<result column="create_time" property="createTimeStr" jdbcType="VARCHAR" />
+  	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+  	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+  	<result column="title" property="title" jdbcType="VARCHAR" />
+  	<result column="remark" property="remark" jdbcType="VARCHAR" />
+  	<result column="username" property="username" jdbcType="VARCHAR" />
+  	<result column="nickname" property="nickname" jdbcType="VARCHAR" />
+  	<result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 根据需求id和需求类型查询方案列表 -->
+  <select id="listPubPlanByPage" resultMap="PubPlanDtoResultMap" parameterType="cn.com.ubing.pub.dto.CRequirementDetailRequestDto" >
+	SELECT 
+	t.`id`,t.`create_time`,t.`requirement_id`,t.`requirement_type`,t.`title`,t.`remark`, t.`status`
+	,t1.`username`, t1.`nickname`
+	FROM
+	  pub_plan t 
+	 LEFT JOIN rms_user t1 ON t.`user_id` = t1.`id` AND t.`delete_flag` = 0
+	WHERE t.`delete_flag`=0 AND t.`requirement_id`=#{requirementId} AND t.`requirement_type`=#{requirementType}
+  </select>
+    
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, user_id, requirement_type, requirement_id, 
+    title, price, child_price, status, read_status, remark, deal_time, serial_number, point, start_time, end_time, read_time, 
+    history_plan_id, plan_type, a1, a2, a3, a4, a5
+  </sql>
+  
+   <select id="getCouponStr" resultType="java.lang.String">
+  	SELECT fn_get_coupon_str_by_reqirement(#{param1},#{param2}) AS c
+  </select>
+  
+  <!-- 历史方案列表查询 -->
+  <select id="HistoryPlanList" resultMap="ListResultMap" parameterType="cn.com.ubing.pub.dto.HistoryPlanListRequestDto" >	
+  	SELECT p.`id` AS plan_id,p.`create_time` AS submit_time,p.`price`,p.`child_price`,p.`title` AS plan_title,p.`remark` AS plan_content,
+	p.`history_plan_id` AS plan_relation_id,p.`plan_type`,
+	(SELECT CASE WHEN p.`plan_type`=3 THEN (SELECT `name` FROM `pub_plan_history_personal_visit` WHERE id = p.`history_plan_id`)
+	WHEN p.`plan_type`=4 THEN (SELECT `name` FROM `pub_plan_history_group_visit` WHERE id = p.`history_plan_id`) END) AS plan_relation_title
+	FROM pub_plan p WHERE p.`user_id`=#{uid} and p.requirement_type = #{planType}
+	<if test="startTime!=null">
+		<![CDATA[AND DATE_FORMAT(p.create_time,'%Y-%m-%d') >= #{startTime}]]>
+	</if>
+	<if test="endTime!=null">
+		<![CDATA[AND DATE_FORMAT(p.create_time,'%Y-%m-%d') <= #{endTime}]]>
+	</if>
+  </select>
+  <select id="getByRequirementIdAndType" resultMap="BaseResultMap" parameterType="cn.com.ubing.pub.model.PubPlan" >
+  	select 
+    <include refid="Base_Column_List" />
+    from pub_plan p
+    where p.`requirement_id`= #{requirementId} AND p.`requirement_type`=#{requirementType} AND
+    p.`user_id`=#{userId} AND p.`delete_flag`=0 limit 1
+  </select>
+  <!-- 同意一条方案 -->
+  <update id="agreePlan" parameterType="java.lang.Long" >
+  	UPDATE pub_plan p SET p.`status`=2,p.`deal_time` = NOW() WHERE p.`id`=#{planId} AND p.`delete_flag`=0
+  </update>
+  <!-- 当采纳一条方案时，调用该方法，拒绝其他方案 -->
+  <update id="rejectOtherPlan" parameterType="cn.com.ubing.pub.model.PubPlan">
+  	UPDATE pub_plan p SET p.`status`=3,p.`deal_time` = NOW() WHERE p.`requirement_id`= #{requirementId} AND p.`requirement_type`= #{requirementType} AND p.`status`=1 AND p.`delete_flag`=0
+  </update>
+  <update id="rejectPlan" parameterType="java.lang.Long" >
+  	UPDATE pub_plan p SET p.`status`=3,p.`deal_time` = NOW() WHERE p.`id`=#{planId} AND p.`delete_flag`=0
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_plan
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_plan
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubPlan" >
+    insert into pub_plan (id, create_time, update_time, 
+      delete_flag, user_id, requirement_type, 
+      requirement_id, title, price, child_price,
+      status, read_status, remark, deal_time, 
+      serial_number, point, start_time, end_time, 
+      read_time, history_plan_id, plan_type, 
+      a1, a2, a3, a4, 
+      a5)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{requirementType,jdbcType=INTEGER}, 
+      #{requirementId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, #{childPrice,jdbcType=DOUBLE}, 
+      #{status,jdbcType=INTEGER}, #{readStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{dealTime,jdbcType=TIMESTAMP}, 
+      fn_get_serial_number(3,0),#{point,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{readTime,jdbcType=TIMESTAMP}, #{historyPlanId,jdbcType=BIGINT}, #{planType,jdbcType=INTEGER}, 
+      #{a1,jdbcType=VARCHAR}, #{a2,jdbcType=VARCHAR}, #{a3,jdbcType=VARCHAR}, #{a4,jdbcType=VARCHAR}, 
+      #{a5,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubPlan" >
+    update pub_plan
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      requirement_type = #{requirementType,jdbcType=INTEGER},
+      requirement_id = #{requirementId,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      child_price = #{childPrice,jdbcType=DOUBLE},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      deal_time = #{dealTime,jdbcType=TIMESTAMP},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      point = #{point,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      read_time = #{readTime,jdbcType=TIMESTAMP},
+      history_plan_id = #{historyPlanId,jdbcType=BIGINT},
+      plan_type = #{planType,jdbcType=INTEGER},
+      a1 = #{a1,jdbcType=VARCHAR},
+      a2 = #{a2,jdbcType=VARCHAR},
+      a3 = #{a3,jdbcType=VARCHAR},
+      a4 = #{a4,jdbcType=VARCHAR},
+      a5 = #{a5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    <update id="updatePubPlanById" parameterType="cn.com.ubing.pub.dto.CUpdatePubPlanRequestDto" >
+    update pub_plan
+    set 
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
+    <!-- 根据需求id和需求类型查询方案列表 -->
+  <select id="listByPage" resultMap="DtoResultMap" parameterType="cn.com.ubing.pub.dto.CRequirementDetailRequestDto" >
+	SELECT t.*,t1.`username`, t1.`nickname`
+	FROM
+	  pub_plan t 
+	 LEFT JOIN rms_user t1 ON t.`user_id` = t1.`id` AND t.`delete_flag` = 0
+	WHERE t.`delete_flag`=0 AND t.`requirement_id`=#{requirementId} AND t.`requirement_type`=#{requirementType}
+  </select>
+  
+</mapper>

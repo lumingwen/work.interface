@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubAppraisalMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubAppraisal" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="from_id" property="fromId" jdbcType="BIGINT" />
+    <result column="to_id" property="toId" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="score_id" property="scoreId" jdbcType="BIGINT" />
+    <result column="plan_id" property="planId" jdbcType="BIGINT" />
+    <result column="reject_content" property="rejectContent" jdbcType="VARCHAR" />
+    <result column="reject_label_id" property="rejectLabelId" jdbcType="INTEGER" />
+    <result column="done_service_label_id" property="doneServiceLabelId" jdbcType="INTEGER" />
+    <result column="done_description_label_id" property="doneDescriptionLabelId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="appraisal_result" property="appraisalResult" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="DtoResultMap" type="cn.com.ubing.pub.dto.PubAppraisalDto" extends="BaseResultMap" >
+  	<result column="appraisal_name" property="appraisalName" jdbcType="VARCHAR" />
+  	<result column="label_name" property="labelName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="cn.com.ubing.pub.dto.PubAppraisalListDto" >
+	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+	<result column="title" property="title" jdbcType="VARCHAR" />
+	<result column="requirement_user_id" property="requirementUserId" jdbcType="VARCHAR" />
+	<result column="requirement_user_name" property="requirementUserName" jdbcType="VARCHAR" />
+	<result column="requirement_user_photoUrl" property="requirementUserPhotoUrl" jdbcType="VARCHAR" />
+	<result column="requirement_time" property="requirementTime" jdbcType="VARCHAR" />
+	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+	<result column="plan_id" property="planId" jdbcType="VARCHAR" />
+	<result column="plan_price" property="planPrice" jdbcType="VARCHAR" />
+	<result column="plan_child_price" property="planChildPrice" jdbcType="VARCHAR" />
+	<result column="plan_status" property="planStatus" jdbcType="VARCHAR" />
+	<result column="done_result" property="doneResult" jdbcType="VARCHAR" />
+	<result column="reject_content" property="rejectContent" jdbcType="VARCHAR" />
+	<result column="reject_time" property="rejectTime" jdbcType="VARCHAR" />
+	<result column="done_description_level" property="doneDescriptionLevel" jdbcType="VARCHAR" />
+	<result column="done_service_level" property="doneServiceLevel" jdbcType="VARCHAR" />
+	<result column="done_content" property="doneContent" jdbcType="VARCHAR" />
+	<result column="done_time" property="doneTime" jdbcType="VARCHAR" />
+	<result column="response_content" property="responseContent" jdbcType="VARCHAR" />
+	<result column="response_time" property="responseTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="DetailResultMap" type="cn.com.ubing.pub.dto.AppraisalDto" >
+	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+	<result column="requirement_title" property="requirementTitle" jdbcType="VARCHAR" />
+	<result column="requirement_user_id" property="requirementUserId" jdbcType="VARCHAR" />
+	<result column="requirement_user_name" property="requirementUserName" jdbcType="VARCHAR" />
+	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+	<result column="requirement_time" property="requirementTime" jdbcType="VARCHAR" />
+	<result column="plan_id" property="planId" jdbcType="VARCHAR" />
+	<result column="plan_price" property="planPrice" jdbcType="VARCHAR" />
+	<result column="plan_child_price" property="planChildPrice" jdbcType="VARCHAR" />
+	<result column="done_service_level" property="appraisalService" jdbcType="VARCHAR" />
+	<result column="done_description_level" property="appraisalDescription" jdbcType="VARCHAR" />
+	<result column="appraisal_result" property="appraisalResult" jdbcType="VARCHAR" />
+	<result column="done_content" property="appraisalContent" jdbcType="VARCHAR" />
+	<result column="appraisal_time" property="appraisalTime" jdbcType="VARCHAR" />	
+	<result column="appraisal_response_time" property="appraisalResponseTime" jdbcType="VARCHAR" />	
+	<result column="appraisal_response_content" property="appraisalResponseContent" jdbcType="VARCHAR" />	
+	<result column="requirement_user_photo_url" property="requirementUserPhotoUrl" jdbcType="VARCHAR" />	
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, from_id, to_id, content, type, score_id, 
+    plan_id, reject_content, reject_label_id, done_service_label_id, done_description_label_id, 
+    status, appraisal_result
+  </sql>
+  <select id="queryAppraisalList" resultMap="ListResultMap" parameterType="cn.com.ubing.pub.dto.AppraisalListRequestDto" >
+	<![CDATA[
+	SELECT
+	res1.id AS requirement_id,
+	res1.title,
+	res1.user_id AS requirement_user_id,
+	res1.photo_url AS requirement_user_photo_url,
+	res1.requirement_by AS requirement_user_name,
+	res1.requirement_time,
+	res1.type AS requirement_type,
+	res1.plan_id,
+	res1.price AS plan_price,
+	res1.child_price AS plan_child_price,
+	res1.plan_status,
+	(SELECT CASE WHEN a1.`reject_content` IS NULL THEN (SELECT label_name FROM `res_evaluation_label_reject` WHERE id = a1.`reject_label_id`) ELSE a1.`reject_content` END)AS reject_content,
+	a1.`create_time` AS reject_time,
+	a2.`done_description_label_id` AS done_description_level,
+	a2.`done_service_label_id` AS done_service_level,
+	a2.`content` AS done_content,
+	a2.`appraisal_result` AS done_result,
+	a2.`create_time` AS done_time,
+	a3.`content` AS response_content,
+	a3.`create_time` AS response_time
+	FROM
+		((SELECT res.*,
+		p.`id` AS plan_id,
+		p.`price`,
+		p.child_price,
+      	p.`status` AS plan_status
+		FROM (SELECT
+			t.`id`,
+			t.`title`,
+			t.`user_id`,
+			(SELECT `image__attahcment_id` FROM rms_user WHERE id = t.`user_id`) AS photo_url,
+			(SELECT nickname FROM rms_user WHERE id = t.`user_id`) AS requirement_by,
+			t.`create_time` AS requirement_time,
+			1 AS TYPE
+			FROM `pub_requirement_ticket` t WHERE t.`id` IN
+			(SELECT u.`requirement_id` FROM `pub_requirement_user` u WHERE u.`delete_flag`=0 AND u.`requirement_type`= 1 AND u.`user_id`=#{uid})) res
+		LEFT JOIN pub_plan p ON p.`requirement_id` = res.`id` AND p.`requirement_type`=1 AND p.`user_id`=#{uid})
+		UNION ALL
+		(SELECT res.*,
+		p.`id` AS plan_id,
+		p.`price`,
+		p.child_price,
+      	p.`status` AS plan_status
+		FROM (SELECT
+			t.`id`,
+			t.`title`,
+			t.`user_id`,
+			(SELECT `image__attahcment_id` FROM rms_user WHERE id = t.`user_id`) AS photo_url,
+			(SELECT nickname FROM rms_user WHERE id = t.`user_id`) AS requirement_by,
+			t.`create_time` AS requirement_time,
+			2 AS TYPE
+			FROM `pub_requirement_hotel` t WHERE t.`id` IN
+			(SELECT u.`requirement_id` FROM `pub_requirement_user` u WHERE u.`delete_flag`=0 AND u.`requirement_type`= 2 AND u.`user_id`=#{uid})) res
+		LEFT JOIN pub_plan p ON p.`requirement_id` = res.`id` AND p.`requirement_type`=2 AND p.`user_id`=#{uid})
+		UNION ALL
+		(SELECT res.*,
+		p.`id` AS plan_id,
+		p.`price`,
+		p.child_price,
+      	p.`status` AS plan_status
+		FROM (SELECT
+			t.`id`,
+			t.`title`,
+			t.`user_id`,
+			(SELECT `image__attahcment_id` FROM rms_user WHERE id = t.`user_id`) AS photo_url,
+			(SELECT nickname FROM rms_user WHERE id = t.`user_id`) AS requirement_by,
+			t.`create_time` AS requirement_time,
+			3 AS TYPE
+			FROM `pub_requirement_personal_visit` t WHERE t.`id` IN
+			(SELECT u.`requirement_id` FROM `pub_requirement_user` u WHERE u.`delete_flag`=0 AND u.`requirement_type`= 3 AND u.`user_id`=#{uid})) res
+		LEFT JOIN pub_plan p ON p.`requirement_id` = res.`id` AND p.`requirement_type`=3 AND p.`user_id`=#{uid})
+		UNION ALL
+		(SELECT res.*,
+		p.`id` AS plan_id,
+		p.`price`,
+		p.child_price,
+      	p.`status` AS plan_status
+		FROM (SELECT
+			t.`id`,
+			t.`title`,
+			t.`user_id`,
+			(SELECT `image__attahcment_id` FROM rms_user WHERE id = t.`user_id`) AS photo_url,
+			(SELECT nickname FROM rms_user WHERE id = t.`user_id`) AS requirement_by,
+			t.`create_time` AS requirement_time,
+			4 AS TYPE
+			FROM `pub_requirement_group_visit` t WHERE t.`id` IN
+			(SELECT u.`requirement_id` FROM `pub_requirement_user` u WHERE u.`delete_flag`=0 AND u.`requirement_type`= 4 AND u.`user_id`=#{uid})) res
+		LEFT JOIN pub_plan p ON p.`requirement_id` = res.`id` AND p.`requirement_type`= 4 AND p.`user_id`=#{uid})) res1
+	LEFT JOIN `pub_appraisal` a1 ON res1.plan_id = a1.`plan_id` AND a1.`from_id`= res1.user_id AND a1.`type`= 1 AND a1.`status`=1 AND a1.`delete_flag`=0
+	LEFT JOIN `pub_appraisal` a2 ON res1.plan_id = a2.`plan_id` AND a2.`from_id`= res1.user_id AND a2.`type`= 2 AND a2.`status`=1 AND a2.`delete_flag`=0
+	LEFT JOIN `pub_appraisal` a3 ON res1.plan_id = a3.`plan_id` AND a3.`from_id`= #{uid} AND a3.`status`=1 AND a3.`delete_flag`=0 where res1.plan_id IS NOT NULL]]>
+	<if test="planStatus == 1">
+		and a3.`content` IS NULL and res1.plan_status = 2
+	</if>
+	<if test="planStatus == 2">
+		and a3.`content` IS not NULL and res1.plan_status = 2
+	</if>
+	<if test="planStatus == 3">
+		and res1.plan_status = 3
+	</if>
+  </select>
+  
+  <select id="appraisalDetail" resultMap="DetailResultMap" parameterType="cn.com.ubing.pub.dto.AppraisalDetailRequestDto" >
+  	<if test="requirementType==3">
+		SELECT 
+		  t.`user_id` AS requirement_user_id,
+		  (SELECT nickname FROM rms_user WHERE id=t.user_id) AS requirement_user_name,
+		  (SELECT save_path FROM `res_attachment` WHERE id=(SELECT image__attahcment_id FROM rms_user WHERE id=t.user_id)) AS requirement_user_photo_url,
+		  t.`id` AS requirement_id,
+		  t.`title` AS requirement_title,
+		  3 AS requirement_type,  
+		  DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS requirement_time,
+		  p.`price` AS plan_price,
+		  p.`id` AS plan_id,
+		  p.`child_price` AS plan_child_price,  
+		  a1.`content` AS done_content,
+		  a1.`done_description_label_id` AS done_description_level,
+		  a1.`done_service_label_id` AS done_service_level,
+		  a1.`appraisal_result`,
+		  DATE_FORMAT(a1.`create_time`,'%Y-%c-%d %H:%i:%s') AS appraisal_time,
+		  a2.`content` AS appraisal_response_content,
+		  DATE_FORMAT(a2.`create_time`,'%Y-%c-%d %H:%i:%s') AS appraisalResponseTime
+		FROM
+		  `pub_requirement_personal_visit` t
+		  LEFT JOIN `pub_plan` p ON p.`requirement_id`=t.`id` AND p.`requirement_type`=3 AND p.`user_id`=#{uid}
+		  LEFT JOIN `pub_appraisal` a1 ON a1.`plan_id`=p.`id` AND a1.`status`= 1 AND a1.`type`= 2 AND a1.`from_id` = t.`user_id`
+		  LEFT JOIN `pub_appraisal` a2 ON a2.`plan_id`=p.`id` AND a2.`status`= 1 AND a2.`type`= 2 AND a2.`to_id` = t.`user_id`
+		WHERE  t.`delete_flag` = 0 AND t.`id`= #{requirementId} AND p.`user_id`=#{uid} limit 1
+  	</if>
+  	<if test="requirementType==4">
+		SELECT 
+		  t.`user_id` AS requirement_user_id,
+		  (SELECT nickname FROM rms_user WHERE id=t.user_id) AS requirement_user_name,
+		  (SELECT save_path FROM `res_attachment` WHERE id=(SELECT image__attahcment_id FROM rms_user WHERE id=t.user_id)) AS requirement_user_photo_url,
+		  t.`id` AS requirement_id,
+		  t.`title` AS requirement_title,
+		  3 AS requirement_type,  
+		  DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS requirement_time,
+		  p.`price` AS plan_price,
+		  p.`id` AS plan_id,
+		  p.`child_price` AS plan_child_price,  
+		  a1.`content` AS done_content,
+		  a1.`done_description_label_id` AS done_description_level,
+		  a1.`done_service_label_id` AS done_service_level,
+		  a1.`appraisal_result`
+		FROM
+		  `pub_requirement_group_visit` t
+		  LEFT JOIN `pub_plan` p ON p.`requirement_id`=t.`id` AND p.`requirement_type`=4
+		  LEFT JOIN `pub_appraisal` a1 ON a1.`plan_id`=p.`id` AND a1.`status`= 1 AND a1.`type`= 2 AND a1.`from_id` = t.`user_id`
+		WHERE  t.`delete_flag` = 0 AND t.`id` = #{requirementId} AND p.`user_id`=#{uid}  limit 1
+  	</if>
+  </select>
+  <select id="appraisalDone" resultMap="DtoResultMap" parameterType="cn.com.ubing.pub.dto.PubAppraisalDto" >
+  	SELECT 	a.*,
+  	(SELECT nickname FROM rms_user WHERE id = a.`from_id`) AS appraisal_name
+  	FROM pub_appraisal a WHERE a.`delete_flag`=0 AND a.`status`=1 AND a.`plan_id`=#{planId} AND a.`type`=2 AND a.`to_id`=#{uid} limit 1
+  </select>
+  <select id="appraisalReject" resultMap="DtoResultMap" parameterType="cn.com.ubing.pub.dto.PubAppraisalDto" >
+  	SELECT 	a.*,
+  	(SELECT `label_name` FROM `res_evaluation_label_reject` WHERE `id`= a.`reject_label_id`) AS label_name,
+  	(SELECT nickname FROM rms_user WHERE id = a.`from_id`) AS appraisal_name
+  	FROM pub_appraisal a WHERE a.`delete_flag`=0 AND a.`status`=1 AND a.`plan_id`=#{planId} AND a.`type`=1 AND a.`to_id`=#{uid} limit 1
+  </select>
+  <select id="appraisalResponse" resultMap="DtoResultMap" parameterType="cn.com.ubing.pub.dto.PubAppraisalDto" >
+  	SELECT* FROM pub_appraisal a WHERE a.`delete_flag`=0 AND a.`status`=1 AND a.`plan_id`=#{planId} AND a.`from_id`= #{uid} limit 1
+  </select>
+  <!-- 根据方案id和评价人查询评价信息 -->
+  <select id="selectByPlanIdAndFromId" resultMap="BaseResultMap" parameterType="cn.com.ubing.pub.model.PubAppraisal" >
+  	SELECT * FROM pub_appraisal a WHERE a.`plan_id`=#{planId} AND a.`from_id`=#{fromId} LIMIT 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_appraisal
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_appraisal
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubAppraisal" >
+    insert into pub_appraisal (id, create_time, update_time, 
+      delete_flag, from_id, to_id, 
+      content, type, score_id, 
+      plan_id, reject_content, reject_label_id, 
+      done_service_label_id, done_description_label_id, 
+      status, appraisal_result)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{fromId,jdbcType=BIGINT}, #{toId,jdbcType=BIGINT}, 
+      #{content,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{scoreId,jdbcType=BIGINT}, 
+      #{planId,jdbcType=BIGINT}, #{rejectContent,jdbcType=VARCHAR}, #{rejectLabelId,jdbcType=BIGINT}, 
+      #{doneServiceLabelId,jdbcType=BIGINT}, #{doneDescriptionLabelId,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{appraisalResult,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.pub.model.PubAppraisal" >
+    insert into pub_appraisal
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="fromId != null" >
+        from_id,
+      </if>
+      <if test="toId != null" >
+        to_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="scoreId != null" >
+        score_id,
+      </if>
+      <if test="planId != null" >
+        plan_id,
+      </if>
+      <if test="rejectContent != null" >
+        reject_content,
+      </if>
+      <if test="rejectLabelId != null" >
+        reject_label_id,
+      </if>
+      <if test="doneServiceLabelId != null" >
+        done_service_label_id,
+      </if>
+      <if test="doneDescriptionLabelId != null" >
+        done_description_label_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="appraisalResult != null" >
+        appraisal_result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="fromId != null" >
+        #{fromId,jdbcType=BIGINT},
+      </if>
+      <if test="toId != null" >
+        #{toId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="scoreId != null" >
+        #{scoreId,jdbcType=BIGINT},
+      </if>
+      <if test="planId != null" >
+        #{planId,jdbcType=BIGINT},
+      </if>
+      <if test="rejectContent != null" >
+        #{rejectContent,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectLabelId != null" >
+        #{rejectLabelId,jdbcType=BIGINT},
+      </if>
+      <if test="doneServiceLabelId != null" >
+        #{doneServiceLabelId,jdbcType=BIGINT},
+      </if>
+      <if test="doneDescriptionLabelId != null" >
+        #{doneDescriptionLabelId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="appraisalResult != null" >
+        #{appraisalResult,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.pub.model.PubAppraisal" >
+    update pub_appraisal
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="fromId != null" >
+        from_id = #{fromId,jdbcType=BIGINT},
+      </if>
+      <if test="toId != null" >
+        to_id = #{toId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="scoreId != null" >
+        score_id = #{scoreId,jdbcType=BIGINT},
+      </if>
+      <if test="planId != null" >
+        plan_id = #{planId,jdbcType=BIGINT},
+      </if>
+      <if test="rejectContent != null" >
+        reject_content = #{rejectContent,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectLabelId != null" >
+        reject_label_id = #{rejectLabelId,jdbcType=BIGINT},
+      </if>
+      <if test="doneServiceLabelId != null" >
+        done_service_label_id = #{doneServiceLabelId,jdbcType=BIGINT},
+      </if>
+      <if test="doneDescriptionLabelId != null" >
+        done_description_label_id = #{doneDescriptionLabelId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="appraisalResult != null" >
+        appraisal_result = #{appraisalResult,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubAppraisal" >
+    update pub_appraisal
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=BIGINT},
+      to_id = #{toId,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      score_id = #{scoreId,jdbcType=BIGINT},
+      plan_id = #{planId,jdbcType=BIGINT},
+      reject_content = #{rejectContent,jdbcType=VARCHAR},
+      reject_label_id = #{rejectLabelId,jdbcType=BIGINT},
+      done_service_label_id = #{doneServiceLabelId,jdbcType=BIGINT},
+      done_description_label_id = #{doneDescriptionLabelId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      appraisal_result = #{appraisalResult,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

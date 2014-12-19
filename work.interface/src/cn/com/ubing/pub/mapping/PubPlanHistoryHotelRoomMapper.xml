@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubPlanHistoryHotelRoomMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubPlanHistoryHotelRoom" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="hotel_id" property="hotelId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="bed_type" property="bedType" jdbcType="BIGINT" />
+    <result column="max_person" property="maxPerson" jdbcType="VARCHAR" />
+    <result column="image_id" property="imageId" jdbcType="BIGINT" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="a1" property="a1" jdbcType="VARCHAR" />
+    <result column="a2" property="a2" jdbcType="VARCHAR" />
+    <result column="a3" property="a3" jdbcType="VARCHAR" />
+    <result column="a4" property="a4" jdbcType="VARCHAR" />
+    <result column="a5" property="a5" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, hotel_id, name, bed_type, max_person, 
+    image_id, introduction, a1, a2, a3, a4, a5
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_plan_history_hotel_room
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_plan_history_hotel_room
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubPlanHistoryHotelRoom" >
+    insert into pub_plan_history_hotel_room (id, create_time, update_time, 
+      delete_flag, hotel_id, name, 
+      bed_type, max_person, image_id, 
+      introduction, a1, a2, 
+      a3, a4, a5)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{hotelId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{bedType,jdbcType=BIGINT}, #{maxPerson,jdbcType=VARCHAR}, #{imageId,jdbcType=BIGINT}, 
+      #{introduction,jdbcType=VARCHAR}, #{a1,jdbcType=VARCHAR}, #{a2,jdbcType=VARCHAR}, 
+      #{a3,jdbcType=VARCHAR}, #{a4,jdbcType=VARCHAR}, #{a5,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.pub.model.PubPlanHistoryHotelRoom" >
+    insert into pub_plan_history_hotel_room
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="hotelId != null" >
+        hotel_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="bedType != null" >
+        bed_type,
+      </if>
+      <if test="maxPerson != null" >
+        max_person,
+      </if>
+      <if test="imageId != null" >
+        image_id,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="a1 != null" >
+        a1,
+      </if>
+      <if test="a2 != null" >
+        a2,
+      </if>
+      <if test="a3 != null" >
+        a3,
+      </if>
+      <if test="a4 != null" >
+        a4,
+      </if>
+      <if test="a5 != null" >
+        a5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="hotelId != null" >
+        #{hotelId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="bedType != null" >
+        #{bedType,jdbcType=BIGINT},
+      </if>
+      <if test="maxPerson != null" >
+        #{maxPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        #{imageId,jdbcType=BIGINT},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="a1 != null" >
+        #{a1,jdbcType=VARCHAR},
+      </if>
+      <if test="a2 != null" >
+        #{a2,jdbcType=VARCHAR},
+      </if>
+      <if test="a3 != null" >
+        #{a3,jdbcType=VARCHAR},
+      </if>
+      <if test="a4 != null" >
+        #{a4,jdbcType=VARCHAR},
+      </if>
+      <if test="a5 != null" >
+        #{a5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.pub.model.PubPlanHistoryHotelRoom" >
+    update pub_plan_history_hotel_room
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="hotelId != null" >
+        hotel_id = #{hotelId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="bedType != null" >
+        bed_type = #{bedType,jdbcType=BIGINT},
+      </if>
+      <if test="maxPerson != null" >
+        max_person = #{maxPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        image_id = #{imageId,jdbcType=BIGINT},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="a1 != null" >
+        a1 = #{a1,jdbcType=VARCHAR},
+      </if>
+      <if test="a2 != null" >
+        a2 = #{a2,jdbcType=VARCHAR},
+      </if>
+      <if test="a3 != null" >
+        a3 = #{a3,jdbcType=VARCHAR},
+      </if>
+      <if test="a4 != null" >
+        a4 = #{a4,jdbcType=VARCHAR},
+      </if>
+      <if test="a5 != null" >
+        a5 = #{a5,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubPlanHistoryHotelRoom" >
+    update pub_plan_history_hotel_room
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      hotel_id = #{hotelId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      bed_type = #{bedType,jdbcType=BIGINT},
+      max_person = #{maxPerson,jdbcType=VARCHAR},
+      image_id = #{imageId,jdbcType=BIGINT},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      a1 = #{a1,jdbcType=VARCHAR},
+      a2 = #{a2,jdbcType=VARCHAR},
+      a3 = #{a3,jdbcType=VARCHAR},
+      a4 = #{a4,jdbcType=VARCHAR},
+      a5 = #{a5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubRequirementCheckMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubRequirementCheck" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="requirement_type" property="requirementType" jdbcType="INTEGER" />
+    <result column="requirement_id" property="requirementId" jdbcType="BIGINT" />
+    <result column="check_status" property="checkStatus" jdbcType="INTEGER" />
+    <result column="check_time" property="checkTime" jdbcType="TIMESTAMP" />
+    <result column="check_remark" property="checkRemark" jdbcType="VARCHAR" />
+    <result column="check_user_id" property="checkUserId" jdbcType="BIGINT" />
+    <result column="update_requirement_content" property="updateRequirementContent" jdbcType="VARCHAR" />
+    <result column="update_requirement_user_id" property="updateRequirementUserId" jdbcType="BIGINT" />
+    <result column="update_requirement_time" property="updateRequirementTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, requirement_type, requirement_id, check_status, 
+    check_time, check_remark, check_user_id, update_requirement_content, update_requirement_user_id, 
+    update_requirement_time
+  </sql>
+  <select id="selectByIdAndType" resultMap="BaseResultMap" parameterType="cn.com.ubing.pub.model.PubRequirementCheck" >
+  	select 
+    <include refid="Base_Column_List" />
+    from pub_requirement_check
+    where requirement_id = #{requirementId,jdbcType=BIGINT} and requirement_type = #{requirementType,jdbcType=INTEGER}
+    and delete_flag=0 limit 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_requirement_check
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update pub_requirement_check set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubRequirementCheck" >
+    insert into pub_requirement_check (id, create_time, update_time, 
+      delete_flag, requirement_type, requirement_id, 
+      check_status, check_time, check_remark, 
+      check_user_id, update_requirement_content, update_requirement_user_id, 
+      update_requirement_time)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{requirementType,jdbcType=INTEGER}, #{requirementId,jdbcType=BIGINT}, 
+      #{checkStatus,jdbcType=INTEGER}, #{checkTime,jdbcType=TIMESTAMP}, #{checkRemark,jdbcType=VARCHAR}, 
+      #{checkUserId,jdbcType=BIGINT}, #{updateRequirementContent,jdbcType=VARCHAR}, #{updateRequirementUserId,jdbcType=BIGINT}, 
+      #{updateRequirementTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubRequirementCheck" >
+    update pub_requirement_check
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      requirement_type = #{requirementType,jdbcType=INTEGER},
+      requirement_id = #{requirementId,jdbcType=BIGINT},
+      check_status = #{checkStatus,jdbcType=INTEGER},
+      check_time = #{checkTime,jdbcType=TIMESTAMP},
+      check_remark = #{checkRemark,jdbcType=VARCHAR},
+      check_user_id = #{checkUserId,jdbcType=BIGINT},
+      update_requirement_content = #{updateRequirementContent,jdbcType=VARCHAR},
+      update_requirement_user_id = #{updateRequirementUserId,jdbcType=BIGINT},
+      update_requirement_time = #{updateRequirementTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

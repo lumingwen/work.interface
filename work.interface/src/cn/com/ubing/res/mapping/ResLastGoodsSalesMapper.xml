@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResLastGoodsSalesMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResLastGoodsSales" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="last_goods_id" property="lastGoodsId" jdbcType="BIGINT" />
+    <result column="travel_time" property="travelTime" jdbcType="TIMESTAMP" />
+    <result column="travel_count" property="travelCount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, user_id, last_goods_id, travel_time, travel_count
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_last_goods_sales
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_last_goods_sales
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.res.model.ResLastGoodsSales" >
+    insert into res_last_goods_sales (id, create_time, update_time, 
+      delete_flag, user_id, last_goods_id, 
+      travel_time, travel_count)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{lastGoodsId,jdbcType=BIGINT}, 
+      #{travelTime,jdbcType=TIMESTAMP}, #{travelCount,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResLastGoodsSales" >
+    update res_last_goods_sales
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      last_goods_id = #{lastGoodsId,jdbcType=BIGINT},
+      travel_time = #{travelTime,jdbcType=TIMESTAMP},
+      travel_count = #{travelCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

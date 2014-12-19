@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.rms.dao.RmsUserMoneyDetailsMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.rms.model.RmsUserMoneyDetails" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="add_money" property="addMoney" jdbcType="DOUBLE" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="approval_time" property="approvalTime" jdbcType="TIMESTAMP" />
+    <result column="approval_description" property="approvalDescription" jdbcType="VARCHAR" />
+    <result column="bank_id" property="bankId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, serial_number, user_id, type, add_money, 
+    title, description, status, approval_time, approval_description, bank_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from rms_user_money_details
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from rms_user_money_details
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.rms.model.RmsUserMoneyDetails" >
+    insert into rms_user_money_details (id, create_time, update_time, 
+      delete_flag, serial_number, user_id, 
+      type, add_money, title, 
+      description, status, approval_time, 
+      approval_description, bank_id)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, `fn_get_serial_number`(8,1), #{userId,jdbcType=BIGINT}, 
+      #{type,jdbcType=INTEGER}, #{addMoney,jdbcType=DOUBLE}, #{title,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{approvalTime,jdbcType=TIMESTAMP}, 
+      #{approvalDescription,jdbcType=VARCHAR}, #{bankId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.rms.model.RmsUserMoneyDetails" >
+    update rms_user_money_details
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      type = #{type,jdbcType=INTEGER},
+      add_money = #{addMoney,jdbcType=DOUBLE},
+      title = #{title,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      approval_time = #{approvalTime,jdbcType=TIMESTAMP},
+      approval_description = #{approvalDescription,jdbcType=VARCHAR},
+      bank_id = #{bankId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

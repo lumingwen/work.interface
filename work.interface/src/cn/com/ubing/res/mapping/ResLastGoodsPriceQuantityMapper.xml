@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResLastGoodsPriceQuantityMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResLastGoodsPriceQuantity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="last_goods_id" property="lastGoodsId" jdbcType="BIGINT" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="single_price" property="singlePrice" jdbcType="DOUBLE" />
+    <result column="market_price" property="marketPrice" jdbcType="DOUBLE" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="DtoResultMap" type="cn.com.ubing.res.dto.ResLastGoodsPriceQuantityDto" >
+  	<result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="single_price" property="singlePrice" jdbcType="VARCHAR" />
+    <result column="market_price" property="marketPrice" jdbcType="VARCHAR" />
+    <result column="quantity" property="quantity" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, last_goods_id, time, single_price, market_price, 
+    quantity
+  </sql>
+  <select id="selectByLastGoodsIdAndDate" resultMap="BaseResultMap" parameterType="cn.com.ubing.res.dto.ResGoodsIdAndDateQueryDto" >
+  	select id, create_time, update_time, delete_flag, last_goods_id, time, single_price, market_price,
+  	quantity-fn_query_last_goods_sales_count(last_goods_id,time) as quantity
+  	from res_last_goods_price_quantity t where t.`last_goods_id`=#{lastGoodId,jdbcType=BIGINT} AND t.`delete_flag`=0
+  	and DATE_FORMAT(t.time,'%Y-%m-%d')=DATE_FORMAT(#{travelTime},'%Y-%m-%d')
+  </select>
+  <select id="selectDtoByLastGoodsId" resultMap="DtoResultMap" parameterType="java.lang.Long" >
+  	SELECT DATE_FORMAT(time,'%Y-%m-%d') as time, single_price, market_price, quantity-fn_query_last_goods_sales_count(last_goods_id,time) as quantity 
+  	FROM res_last_goods_price_quantity t
+	WHERE t.`last_goods_id`=#{id,jdbcType=BIGINT} AND t.`delete_flag`=0
+  </select>
+  <select id="selectByLastGoodsId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  	SELECT * FROM res_last_goods_price_quantity t
+	WHERE t.`last_goods_id`=#{id,jdbcType=BIGINT} AND t.`delete_flag`=0
+  </select>
+  <select id="selectFirstById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  	SELECT * FROM res_last_goods_price_quantity t
+	WHERE t.`last_goods_id`=#{id,jdbcType=BIGINT} AND t.`delete_flag`=0
+	AND t.`time`>NOW() ORDER BY t.`time` LIMIT 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_last_goods_price_quantity
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from res_last_goods_price_quantity
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.res.model.ResLastGoodsPriceQuantity" >
+    insert into res_last_goods_price_quantity (id, create_time, update_time, 
+      delete_flag, last_goods_id, time, 
+      single_price, market_price, quantity
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{lastGoodsId,jdbcType=BIGINT}, #{time,jdbcType=TIMESTAMP}, 
+      #{singlePrice,jdbcType=DOUBLE}, #{marketPrice,jdbcType=DOUBLE}, #{quantity,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResLastGoodsPriceQuantity" >
+    update res_last_goods_price_quantity
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      last_goods_id = #{lastGoodsId,jdbcType=BIGINT},
+      time = #{time,jdbcType=TIMESTAMP},
+      single_price = #{singlePrice,jdbcType=DOUBLE},
+      market_price = #{marketPrice,jdbcType=DOUBLE},
+      quantity = #{quantity,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

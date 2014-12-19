@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubPlanHistoryHotelMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubPlanHistoryHotel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="room_type" property="roomType" jdbcType="VARCHAR" />
+    <result column="bed_type" property="bedType" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="image_id" property="imageId" jdbcType="BIGINT" />
+  </resultMap>
+  
+    <resultMap id="PubPlanHistoryHotelMap" type="cn.com.ubing.pub.dto.CPlanHistoryHotelDto" >
+  	   <result column="id" property="id" jdbcType="BIGINT" />
+  	   <result column="address" property="address" jdbcType="VARCHAR" />
+  	   <result column="room_type" property="roomType" jdbcType="VARCHAR" />
+  	   <result column="bed_type" property="bedType" jdbcType="VARCHAR" />
+  	   <result column="image_id" property="imageId" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, room_type, bed_type,address,image_id
+  </sql>
+  
+    <sql id="Base_Column_List1" >
+    id,room_type, bed_type,address,image_id
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_plan_history_hotel
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update pub_plan_history_hotel set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.pub.model.PubPlanHistoryHotel" >
+    insert into pub_plan_history_hotel (id, create_time, update_time, 
+      delete_flag, room_type, bed_type,address,image_id)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{roomType,jdbcType=VARCHAR}, #{bedType,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{imageId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubPlanHistoryHotel" >
+    update pub_plan_history_hotel
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      room_type = #{roomType,jdbcType=VARCHAR},
+      bed_type = #{bedType,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+        image_id=#{imageId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    <!-- 查询酒店历史方案 -->
+    <select id="selectDetail" resultMap="PubPlanHistoryHotelMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List1" />
+    from pub_plan_history_hotel
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.msg.dao.MsgBlacklistMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.msg.model.MsgBlacklist" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="from_id" property="fromId" jdbcType="BIGINT" />
+    <result column="to_id" property="toId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, from_id, to_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from msg_blacklist
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update msg_blacklist delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.msg.model.MsgBlacklist" >
+    insert into msg_blacklist (id, create_time, update_time, 
+      delete_flag, from_id, to_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{fromId,jdbcType=BIGINT}, #{toId,jdbcType=BIGINT}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.msg.model.MsgBlacklist" >
+    update msg_blacklist
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=BIGINT},
+      to_id = #{toId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
+  <!-- 扩展 -->
+  
+  <select id="listMsgBlacklist" resultMap="BaseResultMap">
+  		select <include refid="Base_Column_List" />
+  			from msg_blacklist
+  				where delete_flag=0
+  					<if test="fromId!=null">
+  						and from_id=#{fromId}
+  					</if>
+  					<if test="toId!=null">
+  						and to_id=#{toId}
+  					</if>
+  </select>
+  
+  
+</mapper>

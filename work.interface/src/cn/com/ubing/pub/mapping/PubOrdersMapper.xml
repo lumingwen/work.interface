@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubOrdersMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubOrders" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="product_name" property="productName" jdbcType="VARCHAR" />
+    <result column="sell_user_id" property="sellUserId" jdbcType="BIGINT" />
+    <result column="buy_user_id" property="buyUserId" jdbcType="BIGINT" />
+    <result column="total_money" property="totalMoney" jdbcType="DOUBLE" />
+    <result column="preferential_money" property="preferentialMoney" jdbcType="DOUBLE" />
+    <result column="pay_money" property="payMoney" jdbcType="DOUBLE" />
+    <result column="pub_plan_id" property="pubPlanId" jdbcType="BIGINT" />
+    <result column="end_requirment_id" property="endRequirmentId" jdbcType="BIGINT" />
+    <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+    <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="alipay_serail_number" property="alipaySerailNumber" jdbcType="VARCHAR" />
+    <result column="pay_serail_number" property="paySerailNumber" jdbcType="VARCHAR" />
+    <result column="last_pay_time" property="lastPayTime" jdbcType="TIMESTAMP" />
+    <result column="confirm_travel_status" property="confirmTravelStatus" jdbcType="INTEGER" />
+    <result column="confirm_travel_time" property="confirmTravelTime" jdbcType="TIMESTAMP" />
+    <result column="last_confirm_travel_time" property="lastConfirmTravelTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="BOrdersListResultMap" type="cn.com.ubing.pub.dto.BPubOrdersListDto" >
+	<result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="pay_status" property="payStatus" jdbcType="VARCHAR" />
+    <result column="confirm_travel_status" property="confirmTravelStatus" jdbcType="VARCHAR" />
+    <result column="pay_money" property="payMoney" jdbcType="VARCHAR" />
+    <result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+    <result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+    <result column="requirement_title" property="requirementTitle" jdbcType="VARCHAR" />
+    <result column="requirement_create_time" property="requirementCreateTime" jdbcType="VARCHAR" />
+    <result column="coupon" property="coupon" jdbcType="VARCHAR" />
+    <result column="contacts" property="contacts" jdbcType="VARCHAR" />
+    <result column="contacts_tel" property="contactsTel" jdbcType="VARCHAR" />
+    <result column="plan_create_time" property="planCreateTime" jdbcType="VARCHAR" />
+    <result column="plan_title" property="planTitle" jdbcType="VARCHAR" />
+    <result column="group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="requirement_by_id" property="requirementById" jdbcType="VARCHAR" />
+    <result column="b_id" property="orderById" jdbcType="VARCHAR" />
+    <result column="plan_id" property="planId" jdbcType="VARCHAR" />
+    <result column="order_res_status" property="orderResStatus" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="OrdersListResultMap" type="cn.com.ubing.pub.dto.PubOrdersListDto" >
+  	<result column="product_name" property="productName" jdbcType="VARCHAR" />
+  	<result column="people_count" property="peopleCount" jdbcType="VARCHAR" />
+  	<result column="child_people_count" property="childPeopleCount" jdbcType="VARCHAR" />
+  	<result column="total_money" property="totalMoney" jdbcType="VARCHAR" />
+  	<result column="pay_status" property="payStatus" jdbcType="VARCHAR" />
+  	<result column="last_pay_time" property="lastPayTime" jdbcType="VARCHAR" />
+  	<result column="confirm_travel_status" property="confirmTravelStatus" jdbcType="VARCHAR" />
+  	<result column="from_appraisal" property="fromAppraisal" jdbcType="VARCHAR" />
+  	<result column="to_appraisal" property="toAppraisal" jdbcType="VARCHAR" />
+  	<result column="order_type" property="orderType" jdbcType="VARCHAR" />
+  	<result column="order_id" property="orderId" jdbcType="VARCHAR" />
+  	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+  	<result column="last_confirm_travel_time" property="lastConfirmTravelTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="OrdersDetailResultMap" type="cn.com.ubing.pub.dto.CPubOrdersDetailResponseDto" >
+  	<result column="order_id" property="orderId" jdbcType="VARCHAR" />
+  	<result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+  	<result column="type" property="type" jdbcType="VARCHAR" />
+  	<result column="product_name" property="productName" jdbcType="VARCHAR" />
+  	<result column="create_time" property="createTime" jdbcType="VARCHAR" />
+  	<result column="pub_plan_id" property="planId" jdbcType="VARCHAR" />
+  	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+  	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+  	<result column="start_time" property="startTime" jdbcType="VARCHAR" />
+  	<result column="people_count" property="peopleCount" jdbcType="VARCHAR" />
+  	<result column="child_people_count" property="childPeopleCount" jdbcType="VARCHAR" />
+  	<result column="price" property="price" jdbcType="VARCHAR" />
+  	<result column="child_price" property="childPrice" jdbcType="VARCHAR" />
+  	<result column="total_money" property="totalMoney" jdbcType="VARCHAR" />
+  	<result column="preferential_money" property="preferentialMoney" jdbcType="VARCHAR" />
+  	<result column="pay_money" property="payMoney" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, type, serial_number, product_name, sell_user_id, 
+    buy_user_id, total_money, preferential_money, pay_money, pub_plan_id, end_requirment_id, 
+    pay_status, pay_time, alipay_serail_number, pay_serail_number, last_pay_time, confirm_travel_status, 
+    confirm_travel_time, last_confirm_travel_time
+  </sql>
+  <!-- 查询订单详情 -->
+  <select id="getOrderDetail" resultMap="OrdersDetailResultMap" parameterType="cn.com.ubing.pub.dto.CPubOrdersDetailRequestDto" >
+  	select * from
+  	(SELECT o.`id` AS order_id,o.`serial_number`,o.`type`,o.`product_name`,DATE_FORMAT(o.`create_time`,"%Y-%m-%d %H:%i:%s") AS create_time,
+	o.`pub_plan_id`,p.`requirement_id`,p.`requirement_type`,DATE_FORMAT(p.`start_time`,"%Y-%m-%d") as start_time,r.`people_count`,
+	r.`child_people_count`,p.`price`,p.`child_price`,o.`total_money`,o.`preferential_money`,
+	o.`pay_money` FROM `pub_orders` o,`c_requirement_orders` r,`pub_plan` p
+	WHERE o.`pub_plan_id`=p.`id` AND r.`plan_id`=p.`id` AND o.`type`=1 AND o.`buy_user_id`=#{uid}
+	UNION ALL
+	SELECT o2.`id` AS order_id,o2.`serial_number`,o2.`type`,o2.`product_name`,DATE_FORMAT(o2.`create_time`,"%Y-%m-%d %H:%i:%s") AS create_time,NULL AS `pub_plan_id`,
+	g.`id` AS requirement_id,5 AS requirement_type,DATE_FORMAT(s.`travel_time`,"%Y-%m-%d") as start_time,s.`travel_count` AS peopleCount,0 AS child_people_count,
+	(SELECT single_price FROM `res_last_goods_price_quantity` WHERE last_goods_id=s.`last_goods_id` AND TIME=s.`travel_time` LIMIT 1) AS price,
+	NULL AS child_price,o2.`total_money`,o2.`preferential_money`,o2.`pay_money`
+	FROM res_last_goods_sales s,res_last_goods g,`pub_orders` o2
+	WHERE s.`last_goods_id`=g.`id` AND o2.`end_requirment_id`=s.`id` AND s.`user_id`=#{uid} AND o2.`type`=2) res
+	where res.order_id=#{orderId}
+  </select>
+  <!-- 查询订单列表 -->
+  <select id="queryOrderList" resultMap="OrdersListResultMap" parameterType="cn.com.ubing.pub.dto.PubOrdersListRequestDto" >
+  	<![CDATA[select * from (SELECT res.*,a1.`id` AS from_appraisal,a2.`id` AS to_appraisal FROM(
+	SELECT v.people_count,v.child_people_count,v.requirement_type,1 AS order_type,
+	t.`product_name`,t.`total_money`,t.`pay_status`,DATE_FORMAT(t.`last_pay_time`,'%Y-%c-%d %H:%i:%s') as last_pay_time,t.id as order_id,
+	t.`confirm_travel_status`,t.`pub_plan_id`,DATE_FORMAT(t.last_confirm_travel_time,'%Y-%c-%d %H:%i:%s') as last_confirm_travel_time
+	FROM `pub_orders` t,c_requirement_orders v
+	WHERE t.`type`=1 AND t.`pub_plan_id`=v.plan_id AND v.user_id=#{uid}) res
+	LEFT JOIN `pub_appraisal` a1 ON res.pub_plan_id=a1.`plan_id` AND a1.`from_id`=#{uid}
+	LEFT JOIN `pub_appraisal` a2 ON res.pub_plan_id=a2.`plan_id` AND a2.`to_id` = #{uid}
+	UNION ALL
+	SELECT s.`travel_count` AS people_count,0 AS child_people_count,2 AS order_type,o.id as order_id,
+	o.`product_name`,o.`total_money`,o.`pay_status`,DATE_FORMAT(o.last_pay_time,'%Y-%c-%d %H:%i:%s') as last_pay_time,NULL AS pub_plan_id,
+	DATE_FORMAT(o.last_confirm_travel_time,'%Y-%c-%d %H:%i:%s') as last_confirm_travel_time,
+	o.`confirm_travel_status`, NULL AS from_appraisal,NULL AS to_appraisal,5 as requirement_type
+	FROM res_last_goods_sales s,res_last_goods g,`pub_orders` o
+	WHERE s.`last_goods_id`=g.`id` AND o.`end_requirment_id`=s.`id` AND s.`user_id`=#{uid}) re
+	where 1=1]]>
+	<if test="status==1">
+		and re.pay_status=1
+	</if>
+	<if test="status==0">
+		<![CDATA[and re.pay_status<>1]]>
+	</if>
+  </select>
+   <!-- 查询B端订单列表 -->
+  <select id="queryBOrderList" resultMap="BOrdersListResultMap" parameterType="cn.com.ubing.pub.dto.BPubOrdersListRequestDto" >
+  	<!-- 1等待付款 2付款超时3已付款4已出行5已评价6已完成  -->
+  	<![CDATA[SELECT 
+     (CASE WHEN res.pay_status=0 THEN 1
+     WHEN (res.pay_status=2 OR res.pay_status=3) THEN 2
+     WHEN res.pay_status=1 AND res.confirm_travel_status=0 THEN 3
+     WHEN res.pay_status=1 AND res.confirm_travel_status=1 AND res.from_ap IS NULL THEN 4
+     WHEN res.pay_status=1 AND res.confirm_travel_status=1 AND res.from_ap IS NOT NULL AND res.to_ap IS NULL THEN 5
+     WHEN res.pay_status=1 AND res.confirm_travel_status=1 AND res.from_ap IS NOT NULL AND res.to_ap IS NOT NULL THEN 6 END) AS order_res_status,
+     res.*
+	FROM(
+	  	SELECT
+		o.`id` AS order_id,
+		o.`pay_money`,
+		o.`pay_status`,
+		o.`confirm_travel_status`,
+		t.requirement_id,
+		t.requirement_type,
+		t.requirement_title,
+		t.contacts,
+		t.coupon,
+		t.requirement_by_id,
+		DATE_FORMAT(t.requirement_create_time,"%Y-%m-%d %k:%i:%s") as requirement_create_time,
+		r.`tel` AS contacts_tel,
+		p.id as plan_id,
+		p.`title` AS plan_title,
+		DATE_FORMAT(p.`create_time`,"%Y-%m-%d %k:%i:%s") as plan_create_time,
+		p.`user_id` AS b_id,
+		a1.`id` AS from_ap,
+		a2.`id` AS to_ap
+		FROM pub_orders o
+		LEFT JOIN pub_plan p ON o.`pub_plan_id` = p.`id` AND  o.`type`=1
+		LEFT JOIN `b_order_requirement` t ON t.requirement_id=p.`requirement_id` AND t.requirement_type=p.`requirement_type`
+		LEFT JOIN `res_common_contacts` r ON r.`id`=t.contacts
+		LEFT JOIN `pub_appraisal` a1 ON a1.`plan_id`=p.`id` AND a1.`from_id`=p.`user_id` AND a1.delete_flag=0 AND a1.`status`=1
+		LEFT JOIN `pub_appraisal` a2 ON a2.`plan_id`=p.`id` AND a2.`to_id`=p.`user_id` AND a2.delete_flag=0 AND a2.`status`=1
+		WHERE 1=1 AND t.`requirement_type`<>1 AND t.`requirement_type`<>2 and p.`user_id` = #{uid}) res where 1=1]]>
+	<if test="status==1"><!-- 1等待付款 2付款超时3已付款4已出行5已评价6已完成  -->
+		and res.pay_status=0
+	</if>
+	<if test="status==2">
+		and (res.pay_status=2 or res.pay_status=3)
+	</if>
+	<if test="status==3">
+		and res.pay_status=1 and res.confirm_travel_status=0
+	</if>
+	<if test="status==4">
+		and res.pay_status=1 and res.confirm_travel_status=1 and res.from_ap is null
+	</if>
+	<if test="status==5">
+		and res.pay_status=1 and res.confirm_travel_status=1 and res.from_ap is not null and res.to_ap is null
+	</if>
+	<if test="status==6">
+		and res.pay_status=1 and res.confirm_travel_status=1 and res.from_ap is not null and res.to_ap is not null
+	</if>
+	<if test="orderId!=null">
+		and res.order_id=#{orderId}
+	</if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_orders
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_orders
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.pub.model.PubOrders" >
+    insert into pub_orders (id, create_time, update_time, 
+      delete_flag, type, serial_number, 
+      product_name, sell_user_id, buy_user_id, 
+      total_money, preferential_money, pay_money, 
+      pub_plan_id, end_requirment_id, pay_status, 
+      pay_time, alipay_serail_number, pay_serail_number, 
+      last_pay_time, confirm_travel_status, confirm_travel_time, 
+      last_confirm_travel_time)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, fn_get_serial_number(4,0), 
+      #{productName,jdbcType=VARCHAR}, #{sellUserId,jdbcType=BIGINT}, #{buyUserId,jdbcType=BIGINT}, 
+      #{totalMoney,jdbcType=DOUBLE}, #{preferentialMoney,jdbcType=DOUBLE}, #{payMoney,jdbcType=DOUBLE}, 
+      #{pubPlanId,jdbcType=BIGINT}, #{endRequirmentId,jdbcType=BIGINT}, #{payStatus,jdbcType=INTEGER}, 
+      #{payTime,jdbcType=TIMESTAMP}, #{alipaySerailNumber,jdbcType=VARCHAR}, #{paySerailNumber,jdbcType=VARCHAR}, 
+      #{lastPayTime,jdbcType=TIMESTAMP}, #{confirmTravelStatus,jdbcType=INTEGER}, #{confirmTravelTime,jdbcType=TIMESTAMP}, 
+      #{lastConfirmTravelTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubOrders" >
+    update pub_orders
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      sell_user_id = #{sellUserId,jdbcType=BIGINT},
+      buy_user_id = #{buyUserId,jdbcType=BIGINT},
+      total_money = #{totalMoney,jdbcType=DOUBLE},
+      preferential_money = #{preferentialMoney,jdbcType=DOUBLE},
+      pay_money = #{payMoney,jdbcType=DOUBLE},
+      pub_plan_id = #{pubPlanId,jdbcType=BIGINT},
+      end_requirment_id = #{endRequirmentId,jdbcType=BIGINT},
+      pay_status = #{payStatus,jdbcType=INTEGER},
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
+      alipay_serail_number = #{alipaySerailNumber,jdbcType=VARCHAR},
+      pay_serail_number = #{paySerailNumber,jdbcType=VARCHAR},
+      last_pay_time = #{lastPayTime,jdbcType=TIMESTAMP},
+      confirm_travel_status = #{confirmTravelStatus,jdbcType=INTEGER},
+      confirm_travel_time = #{confirmTravelTime,jdbcType=TIMESTAMP},
+      last_confirm_travel_time = #{lastConfirmTravelTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+     <select id="queryOrdersCount"  resultType="java.lang.Integer" parameterType="cn.com.ubing.common.dto.RequestDto" >
+    SELECT COUNT(*) as order_count FROM (
+      SELECT o.`id` AS order_id,o.`serial_number`,o.`type`,o.`product_name`,o.`create_time`,
+	o.`pub_plan_id`,p.`requirement_id`,p.`requirement_type`,p.`start_time`,r.`people_count`,
+	r.`child_people_count`,p.`price`,p.`child_price`,o.`total_money`,o.`preferential_money`,
+	o.`pay_money` FROM `pub_orders` o,`c_requirement_orders` r,`pub_plan` p
+	WHERE o.`pub_plan_id`=p.`id` AND r.`plan_id`=p.`id` AND o.`type`=1 AND o.`buy_user_id`=#{uid}
+	and (o.`pay_status`=0 OR (o.`pay_status`=1 AND o.`confirm_travel_status`=0))
+	) tab
+  </select>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubRequirementPersonalVisitAddedMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubRequirementPersonalVisitAdded" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="requirement_id" property="requirementId" jdbcType="BIGINT" />
+    <result column="added_service_id" property="addedServiceId" jdbcType="BIGINT" />
+  </resultMap>
+  
+    <resultMap id="AddServiceMap" type="cn.com.ubing.pub.dto.PubRequirementPersonVisitAddDto" >
+	    <result column="id" property="id" jdbcType="BIGINT" />
+	    <result column="add_service_name" property="addServiceName" jdbcType="VARCHAR" />
+	    <result column="icon" property="icon" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, requirement_id, added_service_id
+  </sql>
+  
+    
+  <sql id="Base_Column_List1" >
+    t.id, t.create_time, t.update_time, t.delete_flag, t.requirement_id, t.added_service_id
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_requirement_personal_visit_added
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_requirement_personal_visit_added
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubRequirementPersonalVisitAdded" >
+    insert into pub_requirement_personal_visit_added (id, create_time, update_time, 
+      delete_flag, requirement_id, added_service_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{requirementId,jdbcType=BIGINT}, #{addedServiceId,jdbcType=BIGINT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubRequirementPersonalVisitAdded" >
+    update pub_requirement_personal_visit_added
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      requirement_id = #{requirementId,jdbcType=BIGINT},
+      added_service_id = #{addedServiceId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    
+    <select id="findPersonVisitAddedByRequirementId" resultMap="AddServiceMap" parameterType="java.lang.Long" >
+	SELECT 
+	  t.id,
+	 r.`name` AS add_service_name ,
+	 r.`icon` AS icon
+	FROM
+	  `pub_requirement_personal_visit_added` t 
+	  LEFT JOIN res_dict_expand r ON r.`id`=t.`added_service_id`
+    where t.requirement_id = #{requirement_id,jdbcType=BIGINT}
+  </select>	
+  
+</mapper>

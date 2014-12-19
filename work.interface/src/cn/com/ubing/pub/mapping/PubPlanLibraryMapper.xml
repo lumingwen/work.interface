@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubPlanLibraryMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubPlanLibrary" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="birthland" property="birthland" jdbcType="BIGINT" />
+    <result column="destination" property="destination" jdbcType="BIGINT" />
+    <result column="trip_count" property="tripCount" jdbcType="VARCHAR" />
+    <result column="hotel_name" property="hotelName" jdbcType="VARCHAR" />
+    <result column="air_line" property="airLine" jdbcType="VARCHAR" />
+    <result column="hotel_address" property="hotelAddress" jdbcType="VARCHAR" />
+    <result column="hotel_room" property="hotelRoom" jdbcType="VARCHAR" />
+    <result column="ticket_type" property="ticketType" jdbcType="INTEGER" />
+    <result column="departure_time" property="departureTime" jdbcType="TIMESTAMP" />
+    <result column="return_time" property="returnTime" jdbcType="TIMESTAMP" />
+    <result column="leave_air_place" property="leaveAirPlace" jdbcType="VARCHAR" />
+    <result column="reach_air_place" property="reachAirPlace" jdbcType="VARCHAR" />
+    <result column="air_berth" property="airBerth" jdbcType="BIGINT" />
+    <result column="flight_number" property="flightNumber" jdbcType="VARCHAR" />
+    <result column="travel_remark" property="travelRemark" jdbcType="VARCHAR" />
+    <result column="fee_remark" property="feeRemark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="LibraryPlanDetail" type="cn.com.ubing.pub.dto.LibraryPlanDetailResponseDto" >
+	<result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="line_id" property="lineId" jdbcType="VARCHAR" />
+    <result column="line_name" property="lineName" jdbcType="VARCHAR" />
+    <result column="birthland" property="birthland" jdbcType="VARCHAR" />
+    <result column="birthland_name" property="birthlandName" jdbcType="VARCHAR" />
+    <result column="destination" property="destination" jdbcType="VARCHAR" />
+    <result column="destination_name" property="destinationName" jdbcType="VARCHAR" />
+    <result column="trip_count" property="tripCount" jdbcType="VARCHAR" />
+    <result column="hotel_name" property="hotelName" jdbcType="VARCHAR" />
+    <result column="air_line" property="airLine" jdbcType="VARCHAR" />
+    <result column="hotel_address" property="hotelAddress" jdbcType="VARCHAR" />
+    <result column="hotel_room" property="hotelRoom" jdbcType="VARCHAR" />
+    <result column="ticket_type" property="ticketType" jdbcType="VARCHAR" />
+    <result column="departure_time" property="departureTime" jdbcType="VARCHAR" />
+    <result column="return_time" property="returnTime" jdbcType="VARCHAR" />
+    <result column="leave_air_place" property="leaveAirPlace" jdbcType="VARCHAR" />
+    <result column="reach_air_place" property="reachAirPlace" jdbcType="VARCHAR" />
+    <result column="air_berth" property="airBerth" jdbcType="VARCHAR" />
+    <result column="air_berth_name" property="airBerthName" jdbcType="VARCHAR" />
+    <result column="flight_number" property="flightNumber" jdbcType="VARCHAR" />
+    <result column="travel_remark" property="travelRemark" jdbcType="VARCHAR" />
+    <result column="fee_remark" property="feeRemark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ListDtoResultMap" type="cn.com.ubing.pub.dto.LibraryPlanListDto" >
+  	<result column="plan_id" property="planId" jdbcType="VARCHAR" />
+  	<result column="plan_type" property="planType" jdbcType="VARCHAR" />
+  	<result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="days" property="days" jdbcType="VARCHAR" />
+    <result column="nights" property="nights" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, type, user_id, title, line_id, birthland, 
+    destination, trip_count, hotel_name, air_line, hotel_address, hotel_room, ticket_type, 
+    departure_time, return_time, leave_air_place, reach_air_place, air_berth, flight_number, 
+    travel_remark, fee_remark
+  </sql>
+  <!-- 查询方案库方案列表信息 -->
+  <select id="queryLibraryPlanList" resultMap="ListDtoResultMap" parameterType="cn.com.ubing.pub.dto.LibraryPlanListRequestDto" >
+  	<if test="planType==3">
+  		SELECT 3 as plan_type,t.id as plan_id,t.`name`,t.`days`,t.`nights`,t.`introduction` FROM `res_plan_library_personal_visit` t WHERE t.`delete_flag`=0 AND t.`user_id`=#{uid}
+  	</if>
+  	<if test="planType==4">
+  		SELECT 4 as plan_type,t.id as plan_id,t.`name`,t.`days`,t.`nights`,t.`introduction` FROM `res_plan_library_group_visit` t WHERE t.`delete_flag`=0 AND t.`user_id`=#{uid}
+  	</if>
+  </select>
+  <!-- 查询方案库方案详细信息 -->
+  <select id="getLibraryPlanDetail" resultMap="LibraryPlanDetail" parameterType="cn.com.ubing.pub.dto.LibraryPlanDetailRequestDto" >
+  	SELECT t.`id`,t.`type`,t.`title`,t.`line_id`,
+	(SELECT rd1.cname FROM `res_dict`rd1 WHERE rd1.id = t.`line_id`) AS line_name,
+	t.`birthland`,(SELECT rd2.cname FROM `res_dict`rd2 WHERE rd2.id = t.`birthland`) AS birthland_name,
+	t.`destination`,(SELECT rd3.cname FROM `res_dict`rd3 WHERE rd3.id = t.`destination`) AS destination_name,
+	t.`trip_count`,t.`hotel_name`,t.`air_line`,t.`hotel_address`,t.`hotel_room`,t.`ticket_type`,
+	DATE_FORMAT(t.`departure_time`,'%Y-%m-%d %T') AS departure_time,
+	DATE_FORMAT(t.`return_time`,'%Y-%m-%d %T') AS return_time,
+	t.`leave_air_place`,t.`reach_air_place`,t.`air_berth`,
+	(SELECT rd4.cname FROM `res_dict`rd4 WHERE rd4.id = t.`air_berth`) AS air_berth_name,
+	t.`flight_number`,t.`travel_remark`,t.`fee_remark`
+	FROM `pub_plan_library` t 
+	WHERE t.`delete_flag`=0
+	AND t.`user_id`= #{uid}
+	AND t.`id` = #{id}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_plan_library
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_plan_library
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubPlanLibrary" >
+    insert into pub_plan_library (id, create_time, update_time, 
+      delete_flag, type, user_id, 
+      title, line_id, birthland, 
+      destination, trip_count, hotel_name, 
+      air_line, hotel_address, hotel_room, 
+      ticket_type, departure_time, return_time, 
+      leave_air_place, reach_air_place, air_berth, 
+      flight_number, travel_remark, fee_remark
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, 
+      #{title,jdbcType=VARCHAR}, #{lineId,jdbcType=BIGINT}, #{birthland,jdbcType=BIGINT}, 
+      #{destination,jdbcType=BIGINT}, #{tripCount,jdbcType=VARCHAR}, #{hotelName,jdbcType=VARCHAR}, 
+      #{airLine,jdbcType=VARCHAR}, #{hotelAddress,jdbcType=VARCHAR}, #{hotelRoom,jdbcType=VARCHAR}, 
+      #{ticketType,jdbcType=INTEGER}, #{departureTime,jdbcType=TIMESTAMP}, #{returnTime,jdbcType=TIMESTAMP}, 
+      #{leaveAirPlace,jdbcType=VARCHAR}, #{reachAirPlace,jdbcType=VARCHAR}, #{airBerth,jdbcType=BIGINT}, 
+      #{flightNumber,jdbcType=VARCHAR}, #{travelRemark,jdbcType=VARCHAR}, #{feeRemark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.pub.model.PubPlanLibrary" >
+    insert into pub_plan_library
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="lineId != null" >
+        line_id,
+      </if>
+      <if test="birthland != null" >
+        birthland,
+      </if>
+      <if test="destination != null" >
+        destination,
+      </if>
+      <if test="tripCount != null" >
+        trip_count,
+      </if>
+      <if test="hotelName != null" >
+        hotel_name,
+      </if>
+      <if test="airLine != null" >
+        air_line,
+      </if>
+      <if test="hotelAddress != null" >
+        hotel_address,
+      </if>
+      <if test="hotelRoom != null" >
+        hotel_room,
+      </if>
+      <if test="ticketType != null" >
+        ticket_type,
+      </if>
+      <if test="departureTime != null" >
+        departure_time,
+      </if>
+      <if test="returnTime != null" >
+        return_time,
+      </if>
+      <if test="leaveAirPlace != null" >
+        leave_air_place,
+      </if>
+      <if test="reachAirPlace != null" >
+        reach_air_place,
+      </if>
+      <if test="airBerth != null" >
+        air_berth,
+      </if>
+      <if test="flightNumber != null" >
+        flight_number,
+      </if>
+      <if test="travelRemark != null" >
+        travel_remark,
+      </if>
+      <if test="feeRemark != null" >
+        fee_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="lineId != null" >
+        #{lineId,jdbcType=BIGINT},
+      </if>
+      <if test="birthland != null" >
+        #{birthland,jdbcType=BIGINT},
+      </if>
+      <if test="destination != null" >
+        #{destination,jdbcType=BIGINT},
+      </if>
+      <if test="tripCount != null" >
+        #{tripCount,jdbcType=VARCHAR},
+      </if>
+      <if test="hotelName != null" >
+        #{hotelName,jdbcType=VARCHAR},
+      </if>
+      <if test="airLine != null" >
+        #{airLine,jdbcType=VARCHAR},
+      </if>
+      <if test="hotelAddress != null" >
+        #{hotelAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="hotelRoom != null" >
+        #{hotelRoom,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketType != null" >
+        #{ticketType,jdbcType=INTEGER},
+      </if>
+      <if test="departureTime != null" >
+        #{departureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnTime != null" >
+        #{returnTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="leaveAirPlace != null" >
+        #{leaveAirPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="reachAirPlace != null" >
+        #{reachAirPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="airBerth != null" >
+        #{airBerth,jdbcType=BIGINT},
+      </if>
+      <if test="flightNumber != null" >
+        #{flightNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="travelRemark != null" >
+        #{travelRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="feeRemark != null" >
+        #{feeRemark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.pub.model.PubPlanLibrary" >
+    update pub_plan_library
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="lineId != null" >
+        line_id = #{lineId,jdbcType=BIGINT},
+      </if>
+      <if test="birthland != null" >
+        birthland = #{birthland,jdbcType=BIGINT},
+      </if>
+      <if test="destination != null" >
+        destination = #{destination,jdbcType=BIGINT},
+      </if>
+      <if test="tripCount != null" >
+        trip_count = #{tripCount,jdbcType=VARCHAR},
+      </if>
+      <if test="hotelName != null" >
+        hotel_name = #{hotelName,jdbcType=VARCHAR},
+      </if>
+      <if test="airLine != null" >
+        air_line = #{airLine,jdbcType=VARCHAR},
+      </if>
+      <if test="hotelAddress != null" >
+        hotel_address = #{hotelAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="hotelRoom != null" >
+        hotel_room = #{hotelRoom,jdbcType=VARCHAR},
+      </if>
+      <if test="ticketType != null" >
+        ticket_type = #{ticketType,jdbcType=INTEGER},
+      </if>
+      <if test="departureTime != null" >
+        departure_time = #{departureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnTime != null" >
+        return_time = #{returnTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="leaveAirPlace != null" >
+        leave_air_place = #{leaveAirPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="reachAirPlace != null" >
+        reach_air_place = #{reachAirPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="airBerth != null" >
+        air_berth = #{airBerth,jdbcType=BIGINT},
+      </if>
+      <if test="flightNumber != null" >
+        flight_number = #{flightNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="travelRemark != null" >
+        travel_remark = #{travelRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="feeRemark != null" >
+        fee_remark = #{feeRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubPlanLibrary" >
+    update pub_plan_library
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      line_id = #{lineId,jdbcType=BIGINT},
+      birthland = #{birthland,jdbcType=BIGINT},
+      destination = #{destination,jdbcType=BIGINT},
+      trip_count = #{tripCount,jdbcType=VARCHAR},
+      hotel_name = #{hotelName,jdbcType=VARCHAR},
+      air_line = #{airLine,jdbcType=VARCHAR},
+      hotel_address = #{hotelAddress,jdbcType=VARCHAR},
+      hotel_room = #{hotelRoom,jdbcType=VARCHAR},
+      ticket_type = #{ticketType,jdbcType=INTEGER},
+      departure_time = #{departureTime,jdbcType=TIMESTAMP},
+      return_time = #{returnTime,jdbcType=TIMESTAMP},
+      leave_air_place = #{leaveAirPlace,jdbcType=VARCHAR},
+      reach_air_place = #{reachAirPlace,jdbcType=VARCHAR},
+      air_berth = #{airBerth,jdbcType=BIGINT},
+      flight_number = #{flightNumber,jdbcType=VARCHAR},
+      travel_remark = #{travelRemark,jdbcType=VARCHAR},
+      fee_remark = #{feeRemark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

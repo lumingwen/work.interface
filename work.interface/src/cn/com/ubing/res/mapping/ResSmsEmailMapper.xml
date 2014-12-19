@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResSmsEmailMapper" >
+  
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResSmsEmail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="business_type" property="businessType" jdbcType="INTEGER" />
+    <result column="sms_mobile_number" property="smsMobileNumber" jdbcType="VARCHAR" />
+    <result column="sms_content" property="smsContent" jdbcType="VARCHAR" />
+    <result column="email_address" property="emailAddress" jdbcType="VARCHAR" />
+    <result column="email_title" property="emailTitle" jdbcType="VARCHAR" />
+    <result column="email_content" property="emailContent" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="retry_count" property="retryCount" jdbcType="INTEGER" />
+    <result column="max_retry_count" property="maxRetryCount" jdbcType="INTEGER" />
+    <result column="priority" property="priority" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />  
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="scode" property="scode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+    <resultMap id="scodeResultMap" type="cn.com.ubing.rms.dto.ScodeDto" extends="BaseResultMap"> 
+    <result column="old_time" property="oldSendTime" jdbcType="VARCHAR" />
+   </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, type,business_type, sms_mobile_number, sms_content, 
+    email_address, email_title, email_content, status, retry_count, max_retry_count, 
+    priority, remark,device_id,scode
+  </sql>
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_sms_email
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update res_sms_email set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.res.model.ResSmsEmail" >
+    insert into res_sms_email (id, create_time, update_time, 
+      delete_flag, type,business_type, sms_mobile_number, 
+      sms_content, email_address, email_title, 
+      email_content, status, retry_count, 
+      max_retry_count, priority, remark,
+      device_id,scode
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},#{businessType,jdbcType=INTEGER}, #{smsMobileNumber,jdbcType=VARCHAR}, 
+      #{smsContent,jdbcType=VARCHAR}, #{emailAddress,jdbcType=VARCHAR}, #{emailTitle,jdbcType=VARCHAR}, 
+      #{emailContent,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{retryCount,jdbcType=INTEGER}, 
+      #{maxRetryCount,jdbcType=INTEGER}, #{priority,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+      #{deviceId,jdbcType=VARCHAR},#{scode,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResSmsEmail" >
+    update res_sms_email
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      business_type = #{businessType,jdbcType=INTEGER},
+      sms_mobile_number = #{smsMobileNumber,jdbcType=VARCHAR},
+      sms_content = #{smsContent,jdbcType=VARCHAR},
+      email_address = #{emailAddress,jdbcType=VARCHAR},
+      email_title = #{emailTitle,jdbcType=VARCHAR},
+      email_content = #{emailContent,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      retry_count = #{retryCount,jdbcType=INTEGER},
+      max_retry_count = #{maxRetryCount,jdbcType=INTEGER},
+      priority = #{priority,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      scode = #{scode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  	
+   <select id="checkSendNumber" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+		count(*)
+		from res_sms_email 
+		where sms_mobile_number = #{tel,jdbcType=VARCHAR}
+	    and delete_flag=0
+	    and TO_DAYS(create_time)=TO_DAYS(now())	
+	</select>
+	
+	<select id="checkDeviceSendNumber" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+		count(*)
+		from res_sms_email 
+		where device_id = #{deviceId,jdbcType=VARCHAR}
+	    and delete_flag=0
+	    and TO_DAYS(create_time)=TO_DAYS(now())	
+	</select>
+	
+	<select id="getLastTime" parameterType="cn.com.ubing.rms.dto.GetCodeRequestDto" resultMap="scodeResultMap">
+		select
+		create_time as old_time ,
+		scode,
+		sms_mobile_number
+		from res_sms_email 
+		where 
+		sms_mobile_number = #{userTel,jdbcType=VARCHAR}
+		or
+		device_id = #{deviceID,jdbcType=VARCHAR}
+	    and delete_flag=0
+	    order by old_time desc
+	    limit 1
+	</select>
+</mapper>

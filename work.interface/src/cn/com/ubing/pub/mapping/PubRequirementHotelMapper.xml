@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubRequirementHotelMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubRequirementHotel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="destination" property="destination" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="departure_time" property="departureTime" jdbcType="TIMESTAMP" />
+    <result column="trip_count" property="tripCount" jdbcType="INTEGER" />
+    <result column="hotel_rooms" property="hotelRooms" jdbcType="INTEGER" />
+    <result column="hotel_price" property="hotelPrice" jdbcType="BIGINT" />
+    <result column="hotel_level" property="hotelLevel" jdbcType="BIGINT" />
+    <result column="detail" property="detail" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="from_sys" property="fromSys" jdbcType="INTEGER" />
+    <result column="manual_status" property="manualStatus" jdbcType="INTEGER" />
+    <result column="send_status" property="sendStatus" jdbcType="INTEGER" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="point" property="point" jdbcType="VARCHAR" />
+    <result column="contacts" property="contacts" jdbcType="BIGINT" />
+    <result column="coupon" property="coupon" jdbcType="BIGINT" />
+    <result column="a1" property="a1" jdbcType="VARCHAR" />
+    <result column="a2" property="a2" jdbcType="VARCHAR" />
+    <result column="a3" property="a3" jdbcType="VARCHAR" />
+    <result column="a4" property="a4" jdbcType="VARCHAR" />
+    <result column="a5" property="a5" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="HotelResultMap" type="cn.com.ubing.pub.dto.PubRequirementHotelDto" extends="BaseResultMap">
+	<result column="contacts_name" property="contactsName" jdbcType="VARCHAR" />
+	<result column="contacts_tel" property="contactsTel" jdbcType="VARCHAR" />
+	<result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+	<result column="coupon_status" property="couponStatus" jdbcType="INTEGER" />
+	<result column="coupon_price" property="couponPrice" jdbcType="VARCHAR" />
+	<result column="hotel_level_str" property="hotelLevelStr" jdbcType="VARCHAR" />
+	<result column="hotel_price_str" property="hotelPriceStr" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="DetailResultMap" type="cn.com.ubing.pub.dto.CRequirementHotelDetailResponseDto">
+  	<id column="id" property="id" jdbcType="BIGINT" />
+  	<result column="type" property="type" jdbcType="BIGINT" />
+  	<result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="departure_time" property="departureTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="detail" property="detail" jdbcType="VARCHAR" />
+	<result column="destination" property="destination" jdbcType="BIGINT" />
+	<result column="destination_name" property="destinationName" jdbcType="VARCHAR" />	
+	<result column="plan_count" property="planCount" jdbcType="INTEGER" />
+	<result column="grap_count" property="grapCount" jdbcType="INTEGER" />	
+	<result column="trip_count" property="tripCount" jdbcType="INTEGER" />
+	<result column="hotel_rooms" property="hotelRooms" jdbcType="INTEGER" />
+	<result column="hotel_level" property="hotelLevel" jdbcType="INTEGER" />
+	<result column="hotel_level_str" property="hotelLevelStr" jdbcType="VARCHAR" />
+	<result column="hotel_price" property="hotelPrice" jdbcType="INTEGER" />
+	<result column="hotel_price_str" property="hotelPriceStr" jdbcType="VARCHAR" />
+    <result column="point" property="point" jdbcType="VARCHAR" />
+	<result column="contacts_name" property="contactsName" jdbcType="VARCHAR" />
+	<result column="contacts_tel" property="contactsTel" jdbcType="VARCHAR" />
+	<result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+	<result column="coupon_status" property="couponStatus" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, user_id, destination, title, departure_time, 
+    trip_count, hotel_rooms, hotel_price, hotel_level, detail, serial_number, from_sys, 
+    manual_status, send_status, end_time, status, point, contacts, coupon, a1, a2, a3, 
+    a4, a5
+  </sql>
+  
+    <sql id="Base_Column_List1" >
+    t.id, t.create_time, t.update_time, t.delete_flag, t.user_id, t.destination, t.title, t.departure_time, 
+    t.trip_count, t.hotel_rooms, t.hotel_price, t.hotel_level, t.detail, t.serial_number, t.from_sys, 
+    t.manual_status, t.send_status, t.end_time, t.status, t.point, t.contacts, t.coupon, t.a1, t.a2, t.a3, 
+    t.a4, t.a5
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_requirement_hotel
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_requirement_hotel
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.pub.model.PubRequirementHotel" >
+    insert into pub_requirement_hotel (id, create_time, update_time, 
+      delete_flag, user_id, destination, 
+      title, departure_time, trip_count, 
+      hotel_rooms, hotel_price, hotel_level, 
+      detail, serial_number, from_sys, 
+      manual_status, send_status, end_time, 
+      status, point, contacts, 
+      coupon, a1, a2, a3, 
+      a4, a5)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{destination,jdbcType=BIGINT}, 
+      #{title,jdbcType=VARCHAR}, #{departureTime,jdbcType=TIMESTAMP}, #{tripCount,jdbcType=INTEGER}, 
+      #{hotelRooms,jdbcType=INTEGER}, #{hotelPrice,jdbcType=BIGINT}, #{hotelLevel,jdbcType=BIGINT}, 
+      #{detail,jdbcType=VARCHAR}, fn_get_serial_number(2,2), #{fromSys,jdbcType=INTEGER}, 
+      #{manualStatus,jdbcType=INTEGER}, #{sendStatus,jdbcType=INTEGER}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{point,jdbcType=VARCHAR}, #{contacts,jdbcType=BIGINT}, 
+      #{coupon,jdbcType=BIGINT}, #{a1,jdbcType=VARCHAR}, #{a2,jdbcType=VARCHAR}, #{a3,jdbcType=VARCHAR}, 
+      #{a4,jdbcType=VARCHAR}, #{a5,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubRequirementHotel" >
+    update pub_requirement_hotel
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=BIGINT},
+      destination = #{destination,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      departure_time = #{departureTime,jdbcType=TIMESTAMP},
+      trip_count = #{tripCount,jdbcType=INTEGER},
+      hotel_rooms = #{hotelRooms,jdbcType=INTEGER},
+      hotel_price = #{hotelPrice,jdbcType=BIGINT},
+      hotel_level = #{hotelLevel,jdbcType=BIGINT},
+      detail = #{detail,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      from_sys = #{fromSys,jdbcType=INTEGER},
+      manual_status = #{manualStatus,jdbcType=INTEGER},
+      send_status = #{sendStatus,jdbcType=INTEGER},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      point = #{point,jdbcType=VARCHAR},
+      contacts = #{contacts,jdbcType=BIGINT},
+      coupon = #{coupon,jdbcType=BIGINT},
+      a1 = #{a1,jdbcType=VARCHAR},
+      a2 = #{a2,jdbcType=VARCHAR},
+      a3 = #{a3,jdbcType=VARCHAR},
+      a4 = #{a4,jdbcType=VARCHAR},
+      a5 = #{a5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <!-- 查询需求详细信息 -->
+  <select id="queryRequirementHotelDetailById" resultMap="DetailResultMap" parameterType="cn.com.ubing.pub.dto.CRequirementDetailRequestDto" >
+     SELECT * FROM (
+		SELECT 
+		  t.`id`,
+		  2 AS TYPE,
+		  (SELECT 
+		    nickname 
+		  FROM
+		    rms_user 
+		  WHERE id = t.`user_id`) AS username,
+		  t.`title`,
+		  t.`create_time`,
+		  t.`departure_time`,
+		  t.`end_time`,
+		  t.`detail`,
+		  (SELECT 
+		    cname 
+		  FROM
+		    res_dict 
+		  WHERE id = t.`destination`) AS destination_name,
+		  (SELECT 
+		    COUNT(*) 
+		  FROM
+		    pub_plan p 
+		  WHERE p.requirement_id = t.id 
+		    AND p.requirement_type = 2) AS plan_count,
+		  (SELECT 
+		    COUNT(*) 
+		  FROM
+		    pub_requirement_user 
+		  WHERE requirement_id = t.id 
+		    AND requirement_type = 2 
+		    AND grap_time != '') AS grap_count,
+		  t.trip_count,
+		  t.hotel_rooms,
+		  t.`hotel_price`,
+		  (SELECT 
+		    cname 
+		  FROM
+		    res_dict 
+		  WHERE id = t.hotel_price) AS hotel_price_str,
+		  t.`hotel_level`,
+		  (SELECT 
+		    cname 
+		  FROM
+		    res_dict 
+		  WHERE id = t.hotel_level) AS hotel_level_str,
+		  t.`point`,
+		  r.`name` AS contacts_name,
+		  r.`tel` AS contacts_tel,
+		  r1.`name` AS coupon_name,
+		  r1.`use_status` AS coupon_status 
+		FROM
+		  `pub_requirement_hotel` t 
+		  LEFT JOIN res_common_contacts r 
+		    ON r.`id` = t.contacts 
+		  LEFT JOIN res_coupon r1 
+		    ON r1.`id` = t.`coupon` 
+		     
+		     ) t1
+  WHERE t1.id=#{requirementId}  
+  </select> 
+  
+    <select id="queryRequirementHotelById" resultMap="HotelResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List1" />,
+     (SELECT 
+		    cname 
+		  FROM
+		    res_dict 
+		  WHERE id = t.hotel_price) AS hotel_price_str,
+		  t.`hotel_level`,
+		  (SELECT 
+		    cname 
+		  FROM
+		    res_dict 
+		  WHERE id = t.hotel_level) AS hotel_level_str,
+	  r.`name` AS contacts_name,
+	  r.`tel` AS contacts_tel,
+	  r1.`name` AS coupon_name,
+	  r1.`use_status` AS coupon_status ,
+	  r1.`money` AS coupon_price 
+    `pub_requirement_hotel` t 
+    LEFT JOIN res_common_contacts r ON r.`id`=t.contacts 
+	LEFT JOIN res_coupon r1 ON r1.`id`=t.`coupon` 
+    where t.id = #{id,jdbcType=BIGINT}
+  </select>	
+  
+</mapper>

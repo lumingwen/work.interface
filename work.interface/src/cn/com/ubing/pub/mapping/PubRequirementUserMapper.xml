@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubRequirementUserMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubRequirementUser" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="requirement_id" property="requirementId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="read_status" property="readStatus" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="read_time" property="readTime" jdbcType="TIMESTAMP" />
+    <result column="grap_time" property="grapTime" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="requirement_type" property="requirementType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="HistoryRequirementList" type="cn.com.ubing.pub.dto.RequirementDto" >
+	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+	<result column="requirement_title" property="requirementTitle" jdbcType="VARCHAR" />
+	<result column="plan_status" property="planStatus" jdbcType="VARCHAR" />
+	<result column="plan_create_time" property="planCreateTime" jdbcType="VARCHAR" />
+	<result column="plan_deadline" property="planDeadline" jdbcType="VARCHAR" />
+	<result column="grap_status" property="grapStatus" jdbcType="VARCHAR" />
+	<result column="status" property="status" jdbcType="VARCHAR" />
+	<result column="read_status" property="readStatus" jdbcType="VARCHAR" />
+	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+	<result column="requirement_by" property="requirementBy" jdbcType="VARCHAR" />
+	<result column="requirement_by_id" property="requirementById" jdbcType="VARCHAR" />
+	<result column="plan_title" property="planTitle" jdbcType="VARCHAR" />
+	<result column="user_message" property="userMessage" jdbcType="VARCHAR" />
+	<result column="appraisal_status" property="appraisalStatus" jdbcType="VARCHAR" />
+	<result column="send_time" property="sendTime" jdbcType="VARCHAR" />
+	<result column="coupon" property="coupon" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="CRequirementList" type="cn.com.ubing.pub.dto.CRequirementListDto" >
+  	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+  	<result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+  	<result column="title" property="title" jdbcType="VARCHAR" />
+  	<result column="create_time" property="createTime" jdbcType="VARCHAR" />
+  	<result column="grap_count" property="grapCount" jdbcType="VARCHAR" />
+  	<result column="plan_count" property="planCount" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="getRequirementInfo" type="cn.com.ubing.pub.dto.GetRequirementInfoResponse" >
+  	<result column="requirement_id" property="requirementId" jdbcType="VARCHAR" />
+    <result column="requirement_type" property="requirementType" jdbcType="VARCHAR" />
+    <result column="requirement_title" property="requirementTitle" jdbcType="VARCHAR" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, requirement_id, user_id, read_status, 
+    status, read_time, grap_time, type, requirement_type
+  </sql>
+  <select id="checkGrapRequirement" resultType="java.lang.Integer" parameterType="cn.com.ubing.pub.dto.GrabRequirementRequestDto" >
+  	<![CDATA[SELECT CASE WHEN
+	(SELECT prop_value FROM res_system_properties WHERE prop_key='SYSTEM_PRO_COMPOSITE_RULE_ZUIDAQIANGDANRENSHU' AND delete_flag=0 LIMIT 1)<=
+	(SELECT COUNT(*) FROM `pub_requirement_user` u WHERE u.`requirement_id`=#{requirementId} AND u.`requirement_type`=#{requirementType} AND u.`status`=1) THEN 0
+	ELSE 1 END]]>
+  </select>
+  <select id="getGroupRequirementInfo" resultMap="getRequirementInfo" parameterType="cn.com.ubing.pub.dto.GetRequirementInfoRequest" >
+  	SELECT t.id AS requirement_id,t.`title` AS requirement_title,4 AS requirement_type,
+	DATE_ADD(u.`create_time`,INTERVAL (SELECT prop_value FROM `res_system_properties` 
+	WHERE prop_key='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANDENGDAISHIJIAN' AND delete_flag=0) SECOND) AS end_time
+	FROM `pub_requirement_group_visit` t
+	LEFT JOIN `pub_requirement_user` u ON t.`id`=u.`requirement_id` AND u.`requirement_type`= 4 AND u.`delete_flag`=0 AND u.user_id = #{uid}
+	WHERE t.`delete_flag`=0 AND requirement_id=#{requirementId}
+  </select>
+  <select id="getPersonalRequirementInfo" resultMap="getRequirementInfo" parameterType="cn.com.ubing.pub.dto.GetRequirementInfoRequest" >
+  	SELECT t.id AS requirement_id,t.`title` AS requirement_title,3 AS requirement_type,
+	DATE_ADD(u.`create_time`,INTERVAL (SELECT prop_value FROM `res_system_properties` 
+	WHERE prop_key='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANDENGDAISHIJIAN' AND delete_flag=0) SECOND) AS end_time
+	FROM `pub_requirement_personal_visit` t
+	LEFT JOIN `pub_requirement_user` u ON t.`id`=u.`requirement_id` AND u.`requirement_type`= 3 AND u.`delete_flag`=0 AND u.user_id = #{uid}
+	WHERE t.`delete_flag`=0 AND requirement_id=#{requirementId}
+  </select>
+  <select id="getHotelRequirementInfo" resultMap="getRequirementInfo" parameterType="cn.com.ubing.pub.dto.GetRequirementInfoRequest" >
+  	SELECT t.id AS requirement_id,t.`title` AS requirement_title,2 AS requirement_type,
+	DATE_ADD(u.`create_time`,INTERVAL (SELECT prop_value FROM `res_system_properties` 
+	WHERE prop_key='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANDENGDAISHIJIAN' AND delete_flag=0) SECOND) AS end_time
+	FROM pub_requirement_hotel t 
+	LEFT JOIN `pub_requirement_user` u ON t.`id`=u.`requirement_id` AND u.`requirement_type`= 2 AND u.`delete_flag`=0 AND u.user_id = #{uid}
+	WHERE t.`delete_flag`=0 AND requirement_id=#{requirementId}
+  </select>
+  <select id="getTicketRequirementInfo" resultMap="getRequirementInfo" parameterType="cn.com.ubing.pub.dto.GetRequirementInfoRequest" >
+  	SELECT t.id AS requirement_id,t.`title` AS requirement_title,1 AS requirement_type,
+	DATE_ADD(u.`create_time`,INTERVAL (SELECT prop_value FROM `res_system_properties` 
+	WHERE prop_key='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANDENGDAISHIJIAN' AND delete_flag=0) SECOND) AS end_time
+	FROM pub_requirement_ticket t 
+	LEFT JOIN `pub_requirement_user` u ON t.`id`=u.`requirement_id` AND u.`requirement_type`= 1 AND u.`delete_flag`=0 AND u.user_id = #{uid}
+	WHERE t.`delete_flag`=0 and requirement_id=#{requirementId}
+  </select>
+  <!-- c端招标列表 -->
+  <select id="queryCRequirementList" resultMap="CRequirementList" parameterType="cn.com.ubing.pub.dto.CRequirementListRequestDto" >
+  	SELECT res.requirement_id,res.requirement_type,res.title,res.create_time,res.grap_count,res.plan_count FROM (
+	(SELECT t.id as requirement_id, 1 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=1 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=1 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_ticket` t WHERE user_id=#{uid})
+	UNION ALL
+	(SELECT t.id as requirement_id, 2 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=2 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=2 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_hotel` t WHERE user_id=#{uid})
+	UNION ALL
+	(SELECT t.id as requirement_id, 3 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=3 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=3 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_personal_visit` t WHERE user_id=#{uid})
+	UNION ALL
+	(SELECT t.id as requirement_id, 4 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=4 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=4 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_group_visit` t WHERE user_id=#{uid}))res WHERE 1=1
+	<!-- 1招标中 2已采纳 3已结束 -->
+	<if test="status==1"><![CDATA[and res.end_time > NOW() AND res.status = 0]]></if>
+	<if test="status==2"><![CDATA[AND res.status <> 0]]></if>
+	<if test="status==3"><![CDATA[and res.end_time <= NOW() AND res.status = 0]]></if>
+  </select>
+  <select id="queryRequirementList" resultMap="HistoryRequirementList" parameterType="cn.com.ubing.pub.dto.RequirementListRequest" >
+    <!-- 2已过期(抢单超时) 3未抢单(可抢单)  4抢单失败 5已拒绝抢单 6提交方案超时 7未提交方案(可提交方案) 8等待中标 9需求过期或已被拒绝 10已中标 -->
+    <![CDATA[SELECT * FROM (SELECT 
+	(
+		CASE WHEN grap_status=0 AND grap_wait_time < NOW() THEN 2
+		WHEN grap_status=0 AND grap_wait_time >= NOW() THEN 3
+		ELSE(
+				CASE WHEN grap_status = 2 THEN 4 WHEN grap_status= 3 THEN 5
+				WHEN grap_status = 1 AND plan_status IS NULL AND submit_plan_time<NOW() THEN 6
+				WHEN grap_status = 1 AND plan_status IS NULL AND submit_plan_time>NOW() THEN 7
+				WHEN grap_status = 1 AND plan_status IS NOT NULL THEN
+				(
+					CASE WHEN plan_status = 1 AND end_time>=NOW() THEN 8
+					WHEN plan_status = 3 OR (plan_status =1 AND end_time<NOW()) THEN 9
+					WHEN plan_status = 2 THEN 10
+					END
+				)
+				END
+		)END
+	)
+	AS STATUS,
+	(SELECT DATE_FORMAT(submit_plan_time,'%Y-%c-%d %H:%i:%s')) AS plan_deadline,
+	res.* FROM
+	(SELECT t.`id` AS requirement_id,
+		t.`create_time`,
+		t.`end_time`,
+		t.`title` AS requirement_title,
+		p.`status` AS plan_status,
+		p.`title` AS plan_title,
+		DATE_FORMAT(u.create_time,'%Y-%c-%d %H:%i') AS send_time,
+		DATE_FORMAT(p.`create_time`,'%Y-%c-%d %H:%i:%s') AS plan_create_time,
+		0 AS appraisal_status,
+		(SELECT DATE_ADD(u.`grap_time`,INTERVAL (SELECT `prop_value` FROM res_system_properties WHERE
+		`prop_key`='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANYOUXIAOSHIJIAN' AND delete_flag=0 LIMIT 1) MINUTE)) AS submit_plan_time,
+		(SELECT DATE_ADD(u.`create_time`,INTERVAL (SELECT `prop_value` FROM res_system_properties WHERE
+		`prop_key`='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANDENGDAISHIJIAN' AND delete_flag=0 LIMIT 1) SECOND)) AS grap_wait_time,
+		u.`read_status`,
+		u.`status` AS grap_status,
+		3 AS requirement_type,
+		cuser.`nickname` AS requirement_by,	
+		cuser.`id` AS requirement_by_id,	
+		(SELECT CASE WHEN a.reject_content IS NULL THEN
+			(SELECT label_name FROM `res_evaluation_label_reject` WHERE id = (SELECT a.reject_label_id FROM `pub_appraisal` a WHERE a.plan_id=p.id AND a.delete_flag=0 AND a.status=1 AND a.type=1 LIMIT 1))
+			WHEN a.reject_content IS NOT NULL THEN a.reject_content
+			ELSE NULL END 
+			FROM `pub_appraisal` a,pub_plan p WHERE a.plan_id = p.id AND a.`status`=1 AND a.`delete_flag`=0 AND a.`type`=1 AND a.`to_id`=#{uid} AND p.`requirement_id`=t.id AND p.`requirement_type`=3 LIMIT 1
+		) AS user_message,
+		t.`coupon`,
+		(SELECT tel FROM `res_common_contacts` WHERE id=t.`contacts`) AS contactsTel
+	FROM `pub_requirement_personal_visit` t 
+	LEFT JOIN rms_user cuser ON cuser.`id`= t.`user_id`
+	LEFT JOIN pub_plan p ON p.`requirement_id`=t.`id` AND p.`requirement_type`=3 AND p.`user_id`=#{uid}
+	LEFT JOIN `pub_requirement_user` u ON u.`requirement_id`=t.`id` AND u.`requirement_type`=3 AND u.`user_id`=#{uid}
+	UNION ALL
+	SELECT 	t.`id` AS requirement_id,
+		t.create_time,
+		t.`end_time`,
+		t.`title` AS requirement_title,
+		p.`status` AS plan_status,
+		p.`title` AS plan_title,
+		DATE_FORMAT(u.create_time,'%Y-%c-%d %H:%i') AS send_time,
+		DATE_FORMAT(p.`create_time`,'%Y-%c-%d %H:%i:%s') AS plan_create_time,
+		0 AS appraisal_status,
+		(SELECT DATE_ADD(u.`grap_time`,INTERVAL (SELECT `prop_value` FROM res_system_properties WHERE
+		`prop_key`='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANYOUXIAOSHIJIAN' AND delete_flag=0 LIMIT 1) MINUTE)) AS submit_plan_time,
+		(SELECT DATE_ADD(u.`create_time`,INTERVAL (SELECT `prop_value` FROM res_system_properties WHERE
+		`prop_key`='SYSTEM_PRO_COMPOSITE_RULE_QIANGDANDENGDAISHIJIAN' AND delete_flag=0 LIMIT 1) SECOND)) AS grap_wait_time,
+		u.`read_status`,
+		u.`status` AS grap_status,
+		4 AS requirement_type,
+		cuser.`nickname` AS requirement_by,	
+		cuser.`id` AS requirement_by_id,	
+		(SELECT CASE WHEN a.reject_content IS NULL THEN
+			(SELECT label_name FROM `res_evaluation_label_reject` WHERE id = (SELECT a.reject_label_id FROM `pub_appraisal` a WHERE a.plan_id=p.id AND a.delete_flag=0 AND a.status=1 AND a.type=1 LIMIT 1))
+			WHEN a.reject_content IS NOT NULL THEN a.reject_content
+			ELSE NULL END 
+			FROM `pub_appraisal` a,pub_plan p WHERE a.plan_id = p.id AND a.`status`=1 AND a.`delete_flag`=0 AND a.`type`=1 AND a.`to_id`=#{uid} AND p.`requirement_id`=t.id AND p.`requirement_type`=4 LIMIT 1
+		) AS user_message,
+		t.`coupon`,
+		(SELECT tel FROM `res_common_contacts` WHERE id=t.`contacts`) AS contactsTel
+	FROM `pub_requirement_group_visit` t 
+	LEFT JOIN rms_user cuser ON cuser.`id`= t.`user_id`
+	LEFT JOIN pub_plan p ON p.`requirement_id`=t.`id` AND p.`requirement_type`=4 AND p.`user_id`=#{uid}
+	LEFT JOIN `pub_requirement_user` u ON u.`requirement_id`=t.`id` AND u.`requirement_type`=4 AND u.`user_id`=#{uid}) res
+	WHERE res.grap_status IS NOT NULL) r where 1=1]]>
+	<if test="status==2"> AND  r.status = 2</if>
+	<if test="status==3"> AND  r.status = 3</if>
+	<if test="status==4"> AND  r.status = 4</if>
+	<if test="status==5"> AND  r.status = 5</if>
+	<if test="status==6"> AND  r.status = 6</if>
+	<if test="status==7"> AND  r.status = 7</if>
+	<if test="status==8"> AND  r.status = 8</if>
+	<if test="status==9"> AND  r.status = 9</if>
+	<if test="status==10"> AND  r.status = 10</if>
+  </select>
+  <select id="selectByIdAndTypeAndUser" resultMap="BaseResultMap" parameterType="cn.com.ubing.pub.model.PubRequirementUser" >
+  	select 
+    <include refid="Base_Column_List" />
+    from pub_requirement_user
+    where requirement_id = #{requirementId,jdbcType=BIGINT}
+    and requirement_type = #{requirementType,jdbcType=BIGINT}
+    and user_id = #{userId,jdbcType=BIGINT}
+    limit 1
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_requirement_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update pub_requirement_user set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubRequirementUser" >
+    insert into pub_requirement_user (id, create_time, update_time, 
+      delete_flag, requirement_id, user_id, 
+      read_status, status, read_time, 
+      grap_time, type, requirement_type
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{requirementId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{readStatus,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{readTime,jdbcType=TIMESTAMP}, 
+      #{grapTime,jdbcType=TIMESTAMP}, #{type,jdbcType=INTEGER}, #{requirementType,jdbcType=INTEGER}
+      )
+  </insert>  
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubRequirementUser" >
+    update pub_requirement_user
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      requirement_id = #{requirementId,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=BIGINT},
+      read_status = #{readStatus,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      read_time = #{readTime,jdbcType=TIMESTAMP},
+      grap_time = #{grapTime,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=INTEGER},
+      requirement_type = #{requirementType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="queryPubPlanCount" resultType="java.lang.Integer" parameterType="cn.com.ubing.common.dto.RequestDto">
+         SELECT COUNT(*) FROM(  	
+	SELECT res.requirement_id,res.requirement_type,res.title,res.create_time,res.grap_count,res.plan_count FROM (
+	(SELECT t.id as requirement_id, 1 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=1 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=1 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_ticket` t WHERE user_id=#{uid})
+	UNION ALL
+	(SELECT t.id as requirement_id, 2 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=2 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=2 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_hotel` t WHERE user_id=#{uid})
+	UNION ALL
+	(SELECT t.id as requirement_id, 3 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=3 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=3 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_personal_visit` t WHERE user_id=#{uid})
+	UNION ALL
+	(SELECT t.id as requirement_id, 4 as requirement_type,t.`title`,DATE_FORMAT(t.`create_time`,'%Y-%c-%d %H:%i:%s') AS create_time,t.`status`,t.`end_time`,
+	(SELECT COUNT(u.id) FROM `pub_requirement_user` u WHERE u.requirement_id=t.`id` AND u.requirement_type=4 AND u.`status`=1 AND u.delete_flag=0) AS grap_count,
+	(SELECT COUNT(p.`id`) FROM `pub_plan` p WHERE p.`requirement_id`=t.`id` AND p.`requirement_type`=4 AND p.`delete_flag`=0) AS plan_count
+	FROM `pub_requirement_group_visit` t WHERE user_id=#{uid}))res WHERE 1=1
+	AND res.end_time > NOW() AND res.status = 0
+	) t
+  </select>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.rms.dao.RmsUserCheckMapper">
+	<resultMap id="BaseResultMap" type="cn.com.ubing.rms.model.RmsUserCheck">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="check_type" property="checkType" jdbcType="INTEGER" />
+		<result column="check_status" property="checkStatus" jdbcType="INTEGER" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="real_name" property="realName" jdbcType="VARCHAR" />
+		<result column="id_number" property="idNumber" jdbcType="VARCHAR" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+		<result column="reject_cause" property="rejectCause" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap type="cn.com.ubing.rms.dto.CompanyCheckInfoResponseDto"
+		id="CompanyCheckInfo">
+		<result column="check_id" property="checkId" jdbcType="VARCHAR" />
+		<result column="check_status" property="checkStatus" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap type="cn.com.ubing.rms.dto.RealNameCheckResponseDto"
+		id="RealNameCheckInfo">
+		<result column="check_id" property="checkId" jdbcType="VARCHAR" />
+		<result column="check_status" property="checkStatus" jdbcType="VARCHAR" />
+		<result column="" property="name" jdbcType="VARCHAR" />
+		<result column="id_number" property="idNumber" jdbcType="VARCHAR" />
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR" />
+		<result column="anti_photo_url" property="antiPhotoUrl"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, create_time, update_time, delete_flag, user_id,
+		check_type,
+		check_status, company_name,
+		real_name, id_number,
+		company_id, reject_cause
+	</sql>
+	<!-- 获取机构认证信息 -->
+	<select id="getCompanyCheckInfo" resultMap="CompanyCheckInfo"
+		parameterType="cn.com.ubing.common.dto.RequestDto">
+		SELECT
+		t.`id` AS check_id,
+		t.`check_status`,
+		t.`company_name`,
+		(SELECT att.`save_path` FROM r_user_check_attachment rca,`res_attachment` att
+		WHERE rca.`attachment_id`=att.`id`
+		AND rca.`delete_flag` = 0 AND rca.`user_check_id`=t.`id`
+		LIMIT 1) AS photo_url
+		FROM `rms_user_check` t WHERE t.`check_type`= 2 AND t.delete_flag=0 AND t.`user_id`= #{uid}	
+	</select>
+	<!-- 获取实名认证信息 -->
+	<select id="getRealNameCheckInfo" resultMap="RealNameCheckInfo"
+		parameterType="cn.com.ubing.common.dto.RequestDto">
+		SELECT
+		t.`id` AS check_id,
+		t.`check_status`,
+		t.`real_name` AS `name`,
+		t.`id_number`,
+		(SELECT att.`save_path` FROM r_user_check_attachment rca,`res_attachment` att
+		WHERE rca.`attachment_id`=att.`id`
+		AND rca.`delete_flag` = 0 AND rca.`type`=1 AND rca.`user_check_id`=t.`id`
+		LIMIT 1) AS photo_url,
+		(SELECT att.`save_path` FROM r_user_check_attachment rca,`res_attachment` att
+		WHERE rca.`attachment_id`=att.`id`
+		AND rca.`delete_flag` = 0 AND rca.`type`=2 AND rca.`user_check_id`=t.`id`
+		LIMIT 1) AS anti_photo_url
+		FROM `rms_user_check` t WHERE t.`check_type`= 1 and t.delete_flag=0 and t.`user_id`= #{uid}
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from rms_user_check
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		update
+		rms_user_check set delete_flag=1
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" keyProperty="id" useGeneratedKeys="true"
+		parameterType="cn.com.ubing.rms.model.RmsUserCheck">
+		insert into rms_user_check (create_time, update_time,
+		delete_flag, user_id, check_type,
+		check_status, company_name,
+		real_name,
+		id_number, company_id, reject_cause
+		)
+		values
+		(#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+		#{deleteFlag,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT},
+		#{checkType,jdbcType=INTEGER},
+		#{checkStatus,jdbcType=INTEGER},
+		#{companyName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
+		#{idNumber,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
+		#{rejectCause,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="cn.com.ubing.rms.model.RmsUserCheck">
+		update
+		rms_user_check
+		set create_time = #{createTime,jdbcType=TIMESTAMP},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		delete_flag =
+		#{deleteFlag,jdbcType=INTEGER},
+		user_id = #{userId,jdbcType=BIGINT},
+		check_type = #{checkType,jdbcType=INTEGER},
+		check_status =
+		#{checkStatus,jdbcType=INTEGER},
+		company_name =
+		#{companyName,jdbcType=VARCHAR},
+		real_name =
+		#{realName,jdbcType=VARCHAR},
+		id_number = #{idNumber,jdbcType=VARCHAR},
+		company_id = #{companyId,jdbcType=VARCHAR},
+		reject_cause =
+		#{rejectCause,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

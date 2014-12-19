@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.ask.dao.AskAnswerMapper" >
+  
+  <resultMap id="BaseResultMap" type="cn.com.ubing.ask.model.AskAnswer" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="from_id" property="fromId" jdbcType="BIGINT" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="question_id" property="questionId" jdbcType="BIGINT" />
+  </resultMap>
+  
+  
+  <select id="listAnswerContent" resultType="cn.com.ubing.ask.dto.content.AnswerDetailContent">
+  		select t.id as id,t1.nickname as answerUserName,t.content as answerContent,DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m:%s') as answerTime,t.update_time,t.status
+  			,(case when t2.from_id=${uid} and t.status=0 and t2.status=0 then '1' else '0' end) as appraiseBestFlag
+  			,(case when t2.from_id=${uid} and t.status=0 then '1' else '0' end) as appraiseGoodFlag
+  			,(case when t2.from_id=${uid} and t.status=0 then '1' else '0' end) as appraiseBadFlag
+  			,(select x.save_path from res_attachment x join rms_user y on x.id=y.image__attahcment_id where y.id=t.from_id) as answerUserIcon
+  				from ask_answer t 
+  					left join rms_user t1 on t.from_id=t1.id
+  					left join ask_question t2 on t.question_id=t2.id
+  				where t.delete_flag=0
+  					<if test="questionId!=null and questionId!=''">
+  						and t.question_id=#{questionId}
+  					</if>
+  </select>
+  
+  
+ <select id="getAnswerContent" parameterType="java.lang.Long" resultType="cn.com.ubing.ask.dto.content.AnswerDetailContent">
+  		select t.id as id,t1.nickname as answerUserName,t.content as answerContent,DATE_FORMAT(t.create_time,'%Y-%m-%d %H:%m:%s') as answerTime,t.update_time,t.status
+  			,(case when t2.from_id=${uid} and t.status=0 and t2.status=0 then '1' else '0' end) as appraiseBestFlag
+  			,(case when t2.from_id=${uid} and t.status=0 then '1' else '0' end) as appraiseGoodFlag
+  			,(case when t2.from_id=${uid} and t.status=0 then '1' else '0' end) as appraiseBadFlag
+  			,(select x.save_path from res_attachment x join rms_user y on x.id=y.image__attahcment_id where y.id=t.from_id) as answerUserIcon
+  				from ask_answer t 
+  					left join rms_user t1 on t.from_id=t1.id
+  					left join ask_question t2 on t.question_id=t2.id
+  				where t.id=#{id}
+  </select>
+  
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, from_id, content, status, question_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from ask_answer
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update ask_answer set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.ask.model.AskAnswer" >
+    insert into ask_answer (id, create_time, update_time, 
+      delete_flag, from_id, content, 
+      status, question_id)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{fromId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{questionId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.ask.model.AskAnswer" >
+    update ask_answer
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=BIGINT},
+      content = #{content,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      question_id = #{questionId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

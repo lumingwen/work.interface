@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubPlanHistoryTicketTransitMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubPlanHistoryTicketTransit" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="ticket_id" property="ticketId" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="airplane_type" property="airplaneType" jdbcType="VARCHAR" />
+    <result column="airplane_number" property="airplaneNumber" jdbcType="VARCHAR" />
+    <result column="airplane_seat" property="airplaneSeat" jdbcType="BIGINT" />
+    <result column="leave_location" property="leaveLocation" jdbcType="BIGINT" />
+    <result column="leave_airport" property="leaveAirport" jdbcType="BIGINT" />
+    <result column="leave_time_hour" property="leaveTimeHour" jdbcType="VARCHAR" />
+    <result column="leave_time_minute" property="leaveTimeMinute" jdbcType="VARCHAR" />
+    <result column="reach_location" property="reachLocation" jdbcType="BIGINT" />
+    <result column="reach_airport" property="reachAirport" jdbcType="BIGINT" />
+    <result column="reach_time_hour" property="reachTimeHour" jdbcType="VARCHAR" />
+    <result column="reach_time_minute" property="reachTimeMinute" jdbcType="VARCHAR" />
+    <result column="a1" property="a1" jdbcType="VARCHAR" />
+    <result column="a2" property="a2" jdbcType="VARCHAR" />
+    <result column="a3" property="a3" jdbcType="VARCHAR" />
+    <result column="a4" property="a4" jdbcType="VARCHAR" />
+    <result column="a5" property="a5" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, ticket_id, type, company_name, airplane_type, 
+    airplane_number, airplane_seat, leave_location, leave_airport, leave_time_hour, leave_time_minute, 
+    reach_location, reach_airport, reach_time_hour, reach_time_minute, a1, a2, a3, a4, 
+    a5
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_plan_history_ticket_transit
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from pub_plan_history_ticket_transit
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.com.ubing.pub.model.PubPlanHistoryTicketTransit" >
+    insert into pub_plan_history_ticket_transit (id, create_time, update_time, 
+      delete_flag, ticket_id, type, 
+      company_name, airplane_type, airplane_number, 
+      airplane_seat, leave_location, leave_airport, 
+      leave_time_hour, leave_time_minute, reach_location, 
+      reach_airport, reach_time_hour, reach_time_minute, 
+      a1, a2, a3, a4, 
+      a5)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{ticketId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, 
+      #{companyName,jdbcType=VARCHAR}, #{airplaneType,jdbcType=VARCHAR}, #{airplaneNumber,jdbcType=VARCHAR}, 
+      #{airplaneSeat,jdbcType=BIGINT}, #{leaveLocation,jdbcType=BIGINT}, #{leaveAirport,jdbcType=BIGINT}, 
+      #{leaveTimeHour,jdbcType=VARCHAR}, #{leaveTimeMinute,jdbcType=VARCHAR}, #{reachLocation,jdbcType=BIGINT}, 
+      #{reachAirport,jdbcType=BIGINT}, #{reachTimeHour,jdbcType=VARCHAR}, #{reachTimeMinute,jdbcType=VARCHAR}, 
+      #{a1,jdbcType=VARCHAR}, #{a2,jdbcType=VARCHAR}, #{a3,jdbcType=VARCHAR}, #{a4,jdbcType=VARCHAR}, 
+      #{a5,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.com.ubing.pub.model.PubPlanHistoryTicketTransit" >
+    insert into pub_plan_history_ticket_transit
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag,
+      </if>
+      <if test="ticketId != null" >
+        ticket_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="companyName != null" >
+        company_name,
+      </if>
+      <if test="airplaneType != null" >
+        airplane_type,
+      </if>
+      <if test="airplaneNumber != null" >
+        airplane_number,
+      </if>
+      <if test="airplaneSeat != null" >
+        airplane_seat,
+      </if>
+      <if test="leaveLocation != null" >
+        leave_location,
+      </if>
+      <if test="leaveAirport != null" >
+        leave_airport,
+      </if>
+      <if test="leaveTimeHour != null" >
+        leave_time_hour,
+      </if>
+      <if test="leaveTimeMinute != null" >
+        leave_time_minute,
+      </if>
+      <if test="reachLocation != null" >
+        reach_location,
+      </if>
+      <if test="reachAirport != null" >
+        reach_airport,
+      </if>
+      <if test="reachTimeHour != null" >
+        reach_time_hour,
+      </if>
+      <if test="reachTimeMinute != null" >
+        reach_time_minute,
+      </if>
+      <if test="a1 != null" >
+        a1,
+      </if>
+      <if test="a2 != null" >
+        a2,
+      </if>
+      <if test="a3 != null" >
+        a3,
+      </if>
+      <if test="a4 != null" >
+        a4,
+      </if>
+      <if test="a5 != null" >
+        a5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="ticketId != null" >
+        #{ticketId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="airplaneType != null" >
+        #{airplaneType,jdbcType=VARCHAR},
+      </if>
+      <if test="airplaneNumber != null" >
+        #{airplaneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="airplaneSeat != null" >
+        #{airplaneSeat,jdbcType=BIGINT},
+      </if>
+      <if test="leaveLocation != null" >
+        #{leaveLocation,jdbcType=BIGINT},
+      </if>
+      <if test="leaveAirport != null" >
+        #{leaveAirport,jdbcType=BIGINT},
+      </if>
+      <if test="leaveTimeHour != null" >
+        #{leaveTimeHour,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveTimeMinute != null" >
+        #{leaveTimeMinute,jdbcType=VARCHAR},
+      </if>
+      <if test="reachLocation != null" >
+        #{reachLocation,jdbcType=BIGINT},
+      </if>
+      <if test="reachAirport != null" >
+        #{reachAirport,jdbcType=BIGINT},
+      </if>
+      <if test="reachTimeHour != null" >
+        #{reachTimeHour,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeMinute != null" >
+        #{reachTimeMinute,jdbcType=VARCHAR},
+      </if>
+      <if test="a1 != null" >
+        #{a1,jdbcType=VARCHAR},
+      </if>
+      <if test="a2 != null" >
+        #{a2,jdbcType=VARCHAR},
+      </if>
+      <if test="a3 != null" >
+        #{a3,jdbcType=VARCHAR},
+      </if>
+      <if test="a4 != null" >
+        #{a4,jdbcType=VARCHAR},
+      </if>
+      <if test="a5 != null" >
+        #{a5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.ubing.pub.model.PubPlanHistoryTicketTransit" >
+    update pub_plan_history_ticket_transit
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteFlag != null" >
+        delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      </if>
+      <if test="ticketId != null" >
+        ticket_id = #{ticketId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="airplaneType != null" >
+        airplane_type = #{airplaneType,jdbcType=VARCHAR},
+      </if>
+      <if test="airplaneNumber != null" >
+        airplane_number = #{airplaneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="airplaneSeat != null" >
+        airplane_seat = #{airplaneSeat,jdbcType=BIGINT},
+      </if>
+      <if test="leaveLocation != null" >
+        leave_location = #{leaveLocation,jdbcType=BIGINT},
+      </if>
+      <if test="leaveAirport != null" >
+        leave_airport = #{leaveAirport,jdbcType=BIGINT},
+      </if>
+      <if test="leaveTimeHour != null" >
+        leave_time_hour = #{leaveTimeHour,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveTimeMinute != null" >
+        leave_time_minute = #{leaveTimeMinute,jdbcType=VARCHAR},
+      </if>
+      <if test="reachLocation != null" >
+        reach_location = #{reachLocation,jdbcType=BIGINT},
+      </if>
+      <if test="reachAirport != null" >
+        reach_airport = #{reachAirport,jdbcType=BIGINT},
+      </if>
+      <if test="reachTimeHour != null" >
+        reach_time_hour = #{reachTimeHour,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeMinute != null" >
+        reach_time_minute = #{reachTimeMinute,jdbcType=VARCHAR},
+      </if>
+      <if test="a1 != null" >
+        a1 = #{a1,jdbcType=VARCHAR},
+      </if>
+      <if test="a2 != null" >
+        a2 = #{a2,jdbcType=VARCHAR},
+      </if>
+      <if test="a3 != null" >
+        a3 = #{a3,jdbcType=VARCHAR},
+      </if>
+      <if test="a4 != null" >
+        a4 = #{a4,jdbcType=VARCHAR},
+      </if>
+      <if test="a5 != null" >
+        a5 = #{a5,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubPlanHistoryTicketTransit" >
+    update pub_plan_history_ticket_transit
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      ticket_id = #{ticketId,jdbcType=BIGINT},
+      type = #{type,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      airplane_type = #{airplaneType,jdbcType=VARCHAR},
+      airplane_number = #{airplaneNumber,jdbcType=VARCHAR},
+      airplane_seat = #{airplaneSeat,jdbcType=BIGINT},
+      leave_location = #{leaveLocation,jdbcType=BIGINT},
+      leave_airport = #{leaveAirport,jdbcType=BIGINT},
+      leave_time_hour = #{leaveTimeHour,jdbcType=VARCHAR},
+      leave_time_minute = #{leaveTimeMinute,jdbcType=VARCHAR},
+      reach_location = #{reachLocation,jdbcType=BIGINT},
+      reach_airport = #{reachAirport,jdbcType=BIGINT},
+      reach_time_hour = #{reachTimeHour,jdbcType=VARCHAR},
+      reach_time_minute = #{reachTimeMinute,jdbcType=VARCHAR},
+      a1 = #{a1,jdbcType=VARCHAR},
+      a2 = #{a2,jdbcType=VARCHAR},
+      a3 = #{a3,jdbcType=VARCHAR},
+      a4 = #{a4,jdbcType=VARCHAR},
+      a5 = #{a5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.pub.dao.PubPlanHistoryTicketMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.pub.model.PubPlanHistoryTicket" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="leave_location" property="leaveLocation" jdbcType="VARCHAR" />
+    <result column="reach_location" property="reachLocation" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="PubPlanHistoryTicketMap" type="cn.com.ubing.pub.dto.CPubPlanHistoryTicketDto" >
+  	   <result column="id" property="id" jdbcType="BIGINT" />
+  	   <result column="leave_location" property="leaveLocationStr" jdbcType="VARCHAR" />
+  	   <result column="reach_location" property="reachLocationStr" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, leave_location, reach_location
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from pub_plan_history_ticket
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update pub_plan_history_ticket set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="cn.com.ubing.pub.model.PubPlanHistoryTicket" >
+    insert into pub_plan_history_ticket (id, create_time, update_time, 
+      delete_flag, leave_location, reach_location
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{leaveLocation,jdbcType=VARCHAR}, #{reachLocation,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.pub.model.PubPlanHistoryTicket" >
+    update pub_plan_history_ticket
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      leave_location = #{leaveLocation,jdbcType=VARCHAR},
+      reach_location = #{reachLocation,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!-- 查询历史方案 -->
+    <select id="selectDetail" resultMap="PubPlanHistoryTicketMap" parameterType="java.lang.Long" >
+    select 
+    id,leave_location,reach_location
+    from pub_plan_history_ticket
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+</mapper>

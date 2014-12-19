@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.com.ubing.res.dao.ResVaneLineKeywordsMapper" >
+  <resultMap id="BaseResultMap" type="cn.com.ubing.res.model.ResVaneLineKeywords" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+    <result column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="rank" property="rank" jdbcType="INTEGER" />
+    <result column="total_count" property="totalCount" jdbcType="INTEGER" />
+    <result column="statistics_time" property="statisticsTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, update_time, delete_flag, line_id, keywords, rank, total_count, 
+    statistics_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from res_vane_line_keywords
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    update res_vane_line_keywords set delete_flag=1
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  keyProperty="id" useGeneratedKeys="true"  parameterType="cn.com.ubing.res.model.ResVaneLineKeywords" >
+    insert into res_vane_line_keywords (id, create_time, update_time, 
+      delete_flag, line_id, keywords, 
+      rank, total_count, statistics_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=INTEGER}, #{lineId,jdbcType=BIGINT}, #{keywords,jdbcType=VARCHAR}, 
+      #{rank,jdbcType=INTEGER}, #{totalCount,jdbcType=INTEGER}, #{statisticsTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+ 
+  <update id="updateByPrimaryKey" parameterType="cn.com.ubing.res.model.ResVaneLineKeywords" >
+    update res_vane_line_keywords
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=INTEGER},
+      line_id = #{lineId,jdbcType=BIGINT},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      rank = #{rank,jdbcType=INTEGER},
+      total_count = #{totalCount,jdbcType=INTEGER},
+      statistics_time = #{statisticsTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
