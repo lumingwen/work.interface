@@ -51,7 +51,7 @@ public class CRmsUserControllerTest extends BaseTest {
 
 		// 调用
 		List<String[]> params = getParamterList("", user);
-		String json = postRequest("/c/userLogin.do", params);
+		String json = postRequest("/cUserLogin.do", params);
 		System.out.println("响应:" + json);
 
 		// 解析
